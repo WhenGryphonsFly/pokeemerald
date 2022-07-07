@@ -18,6 +18,7 @@
 #define CARD_TYPE_STAMP      1 // "Stamp Card"
 #define CARD_TYPE_LINK_STAT  2 // Referred to as the "Battle Card", shows battle and trade stats
 #define CARD_TYPE_COUNT      3
+#define CARD_TYPE_LINK_STAT_FOOTER _("Wins: {DYNAMIC}   / Losses: {DYNAMIC}À  / Trades: {DYNAMIC}Á  $")
 
 // Values for the sendType field of Wonder Card/News
 #define SEND_TYPE_DISALLOWED     0
@@ -38,6 +39,14 @@
 #define STAMP_ID      1
 
 // Number of different types/colors of Wonder Card and News backgrounds
+#define WONDER_BG_YELLOW 0
+#define WONDER_BG_LAND_SEA_SKY 1
+#define WONDER_BG_RED 2
+#define WONDER_BG_GREEN 3
+#define WONDER_BG_BLUE 4
+#define WONDER_BG_OLIVE 5
+#define WONDER_BG_GOLD 6
+#define WONDER_BG_SILVER 7
 #define NUM_WONDER_BGS 8
 
 #define MAX_WONDER_CARD_STAT 999

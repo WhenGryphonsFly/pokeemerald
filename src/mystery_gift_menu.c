@@ -31,6 +31,8 @@
 #include "link_rfu.h"
 #include "wonder_news.h"
 #include "constants/cable_club.h"
+#include "main_menu.h"
+#include "AAA.h"
 
 #define LIST_MENU_TILE_NUM 10
 #define LIST_MENU_PAL_NUM 224
@@ -44,22 +46,6 @@ EWRAM_DATA bool8 gGiftIsFromEReader = FALSE;
 
 static const u16 sTextboxBorder_Pal[] = INCBIN_U16("graphics/interface/mystery_gift_textbox_border.gbapal");
 static const u32 sTextboxBorder_Gfx[] = INCBIN_U32("graphics/interface/mystery_gift_textbox_border.4bpp.lz");
-
-struct MysteryGiftTaskData
-{
-    u16 var; // Multipurpose
-    u16 unused1;
-    u16 unused2;
-    u16 unused3;
-    u8 state;
-    u8 textState;
-    u8 unused4;
-    u8 unused5;
-    bool8 isWonderNews;
-    bool8 sourceIsFriend;
-    u8 msgId;
-    u8 * clientMsg;
-};
 
 static const struct BgTemplate sBGTemplates[] = {
     {
@@ -471,7 +457,7 @@ void MainCB_FreeAllBuffersAndReturnToInitTitleScreen(void)
     Free(GetBgTilemapBuffer(1));
     Free(GetBgTilemapBuffer(2));
     Free(GetBgTilemapBuffer(3));
-    SetMainCallback2(CB2_InitTitleScreen);
+    SetMainCallback2(CB2_InitMainMenu);
 }
 
 void PrintMysteryGiftOrEReaderTopMenu(bool8 isEReader, bool32 useCancel)
@@ -816,7 +802,7 @@ static bool32 ClearSavedNewsOrCard(bool32 isWonderNews)
     return TRUE;
 }
 
-static bool32 ExitWonderCardOrNews(bool32 isWonderNews, bool32 useCancel)
+bool32 ExitWonderCardOrNews(bool32 isWonderNews, bool32 useCancel)
 {
     if (!isWonderNews)
     {
@@ -1102,7 +1088,7 @@ enum {
 
 static void CreateMysteryGiftTask(void)
 {
-    u8 taskId = CreateTask(Task_MysteryGift, 0);
+    u8 taskId = CreateTask(task00_mystery_gift, 0);
     struct MysteryGiftTaskData * data = (void *)gTasks[taskId].data;
     data->state = MG_STATE_TO_MAIN_MENU;
     data->textState = 0;
@@ -1547,17 +1533,17 @@ static void Task_MysteryGift(u8 taskId)
         if (!data->isWonderNews)
         {
             AddTextPrinterToWindow1(gText_SendingWonderCard);
-            MysterGiftServer_CreateForCard();
+            MysteryGiftServer_CreateForCard();
         }
         else
         {
             AddTextPrinterToWindow1(gText_SendingWonderNews);
-            MysterGiftServer_CreateForNews();
+            MysteryGiftServer_CreateForNews();
         }
         data->state = MG_STATE_SERVER_LINK;
         break;
     case MG_STATE_SERVER_LINK:
-        if (MysterGiftServer_Run(&data->var) == SVR_RET_END)
+        if (MysteryGiftServer_Run(&data->var) == SVR_RET_END)
         {
             data->msgId = data->var;
             data->state = MG_STATE_SERVER_LINK_END;

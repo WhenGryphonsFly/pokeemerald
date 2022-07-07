@@ -50,12 +50,6 @@
 	.byte \function
 	.endm
 
-	@ callstd function names
-	STD_OBTAIN_ITEM = 0
-	STD_FIND_ITEM = 1
-	STD_OBTAIN_DECORATION = 7
-	STD_REGISTER_MATCH_CALL = 8
-
 	@ Calls the script in gStdScripts at index function.
 	.macro callstd function:req
 	.byte 0x09
@@ -305,13 +299,6 @@
 	.macro checkflag flag:req
 	.byte 0x2b
 	.2byte \flag
-	.endm
-
-	@ Initializes the RTC`s local time offset to the given hour and minute.
-	.macro initclock hour:req, minute:req
-	.byte 0x2c
-	.2byte \hour
-	.2byte \minute
 	.endm
 
 	@ Updates local time using the RTC and runs time based events.
@@ -937,15 +924,6 @@
 	.byte \bottom
 	.endm
 
-	@ Nopped in Emerald, but still consumes parameters.
-	.macro drawboxtext left:req, top:req, multichoiceId:req, ignoreBPress:req
-	.byte 0x74
-	.byte \left
-	.byte \top
-	.byte \multichoiceId
-	.byte \ignoreBPress
-	.endm
-
 	@ Displays a box containing the front sprite for the specified Pokemon species.
 	.macro showmonpic species:req, x:req, y:req
 	.byte 0x75
@@ -963,14 +941,6 @@
 	.macro showcontestpainting winnerId:req
 	.byte 0x77
 	.byte \winnerId
-	.endm
-
-	@ Displays the given string as braille text in a standard message box. The string should use the .braille directive
-	@ to convert text to braille, and be preceded by brailleformat. The brailleformat data is skipped over (in RS, these
-	@ bytes determined the box's size and position, but in Emerald these are calculated automatically).
-	.macro braillemessage text:req
-	.byte 0x78
-	.4byte \text
 	.endm
 
 	@ Formatting for the braille window, to be put at the start of a pointer used by braillemessage.
@@ -1127,15 +1097,6 @@
 	.2byte \id
 	.endm
 
-	@ Sets a berry tree's berry and growth stage. treeId is any BERRY_TREE_* constant (an index into berryTrees in SaveBlock1),
-	@ berry is any ITEM_TO_BERRY(ITEM_BERRY_NAME) value, and growthStage is any BERRY_STAGE_* constant.
-	.macro setberrytree treeId:req, berry:req, growthStage:req
-	.byte 0x8a
-	.byte \treeId
-	.byte \berry
-	.byte \growthStage
-	.endm
-
 	@ Opens the party menu to select a Pokemon for a contest.
 	.macro choosecontestmon
 	.byte 0x8b
@@ -1209,12 +1170,6 @@
 	.byte 0  @ \x
 	.byte 0  @ \y
 	.byte \disable
-	.endm
-
-	@ Gets whether the effects of the specified PokeNews program are active. newsKind is a POKENEWS_* constant.
-	.macro getpokenewsactive newsKind:req
-	.byte 0x96
-	.2byte \newsKind
 	.endm
 
 	@ Fades the screen to and from black and white. Modes are FADE_(TO/FROM)_(WHITE/BLACK)
@@ -1393,15 +1348,6 @@
 	.byte 0xb0
 	.2byte \x
 	.2byte \y
-	.endm
-
-	@ Consumes its parameters and does nothing. It is implemented but unused in Ruby/Sapphire.
-	.macro addelevmenuitem a:req, b:req, c:req, d:req
-	.byte 0xb1
-	.byte \a
-	.2byte \b
-	.2byte \c
-	.2byte \d
 	.endm
 
 	@ Does nothing. It is implemented but unused in Ruby/Sapphire.
@@ -1617,119 +1563,6 @@
 	.byte \location
 	.endm
 
-	@ For the rotating tile puzzles in Mossdeep Gym / Trick House Room 7. Moves the objects one rotation
-	@ on the colored puzzle specified by puzzleNumber.
-	.macro moverotatingtileobjects puzzleNumber:req
-	.byte 0xd3
-	.2byte \puzzleNumber
-	.endm
-
-	@ For the rotating tile puzzles in Mossdeep Gym / Trick House Room 7. Updates the facing direction of all objects on the puzzle tiles
-	.macro turnrotatingtileobjects
-	.byte 0xd4
-	.endm
-
-	@ For the rotating tile puzzles in Mossdeep Gym / Trick House Room 7. Allocates memory for the puzzle objects.
-	@ isTrickHouse is needed to determine which of the two maps the puzzle is on, in order to know where in the tileset
-	@ the puzzle tiles start (TRUE for Trick House Room, FALSE for Mossdeep Gym).
-	.macro initrotatingtilepuzzle isTrickHouse:req
-	.byte 0xd5
-	.2byte \isTrickHouse
-	.endm
-
-	@ For the rotating tile puzzles in Mossdeep Gym / Trick House Room 7. Frees the memory allocated for the puzzle objects.
-	.macro freerotatingtilepuzzle
-	.byte 0xd6
-	.endm
-
-	@ Warp used by the teleport tiles in the Mossdeep Gym. Plays SE_WARP_IN and does a simple fade transition.
-	@ Also skips reloading object events by setting SKIP_OBJECT_EVENT_LOAD.
-	@ Warp commands can be given either the id of which warp location to go to on the destination map
-	@ or a pair of x/y coordinates to go to directly on the destination map.
-	.macro warpmossdeepgym map:req, a, b, c
-	.byte 0xd7
-	formatwarp \map, \a, \b, \c
-	.endm
-
-	@ Sets the selected object to the id of the currently approaching trainer.
-	.macro selectapproachingtrainer
-	.byte 0xd8
-	.endm
-
-	@ Freezes all objects immediately except the player and the approaching trainers.
-	@ The player and trainers are frozen once their movement is finished.
-	.macro lockfortrainer
-	.byte 0xd9
-	.endm
-
-	@ Destroys the window created by braillemessage.
-	.macro closebraillemessage
-	.byte 0xda
-	.endm
-
-	@ Prints and draws the message all at once rather than character by character.
-	@ Does not wait for player input to continue.
-	.macro messageinstant text:req
-	.byte 0xdb
-	.4byte \text
-	.endm
-
-	@ Equivalent to fadescreen but copies gPlttBufferUnfaded to gPaletteDecompressionBuffer on the fade out
-	@ and the reverse on the fade in, in effect saving gPlttBufferUnfaded to restore it.
-	.macro fadescreenswapbuffers mode:req
-	.byte 0xdc
-	.byte \mode
-	.endm
-
-	@ Buffers the specified trainer's class name to the given string var.
-	@ If the trainer id is >= TRAINERS_COUNT it will be treated as TRAINER_NONE.
-	.macro buffertrainerclassname stringVarId:req, trainerId:req
-	.byte 0xdd
-	stringvar \stringVarId
-	.2byte \trainerId
-	.endm
-
-	@ Buffers the specified trainer's name to the given string var.
-	@ If the trainer id is >= TRAINERS_COUNT it will be treated as TRAINER_NONE.
-	.macro buffertrainername stringVarId:req, trainerId:req
-	.byte 0xde
-	stringvar \stringVarId
-	.2byte \trainerId
-	.endm
-
-	@ Starts a Pokenav call with the given text.
-	.macro pokenavcall text:req
-	.byte 0xdf
-	.4byte \text
-	.endm
-
-	@ Warp with a fade to white. Used during the Sootopolis legendary fight.
-	@ Warp commands can be given either the id of which warp location to go to on the destination map
-	@ or a pair of x/y coordinates to go to directly on the destination map.
-	.macro warpwhitefade map:req, a, b, c
-	.byte 0xe0
-	formatwarp \map, \a, \b, \c
-	.endm
-
-	@ Buffers the name of the contest category to the buffer.
-	@ For example a category of CONTEST_CATEGORY_COOL will buffer the string "COOLNESS CONTEST".
-	.macro buffercontestname stringVarId:req, category:req
-	.byte 0xe1
-	stringvar \stringVarId
-	.2byte \category
-	.endm
-
-	@ Writes the name of the specified item to the specified buffer. If 'item' is a Berry or ITEM_POKE_BALL
-	@ and if the quantity is 2 or more, the buffered string will be pluralized ("IES" or "S" appended).
-	@ If the specified item is >= ITEMS_COUNT then the name of ITEM_NONE ("????????") is buffered instead.
-	.macro bufferitemnameplural stringVarId:req, item:req, quantity:req
-	.byte 0xe2
-	stringvar \stringVarId
-	.2byte \item
-	.2byte \quantity
-	.endm
-
-
 @ Supplementary
 
 	.macro goto_if_unset flag:req, dest:req
@@ -1867,18 +1700,6 @@
 	goto_if_eq \dest
 	.endm
 
-	@ Message box types
-	MSGBOX_NPC = 2
-	MSGBOX_SIGN = 3
-	MSGBOX_DEFAULT = 4
-	MSGBOX_YESNO = 5
-	MSGBOX_AUTOCLOSE = 6
-	MSGBOX_GETPOINTS = 9
-	MSGBOX_POKENAV = 10
-
-	YES = 1
-	NO  = 0
-
 	@ Buffers the given text and calls the relevant standard message script (see gStdScripts).
 	.macro msgbox text:req, type=MSGBOX_DEFAULT
 	loadword 0, \text
@@ -1939,3 +1760,250 @@
 	setvar VAR_0x8006, \item
 	special CreateEventLegalEnemyMon
 	.endm
+	
+	@ Message box types and callstd function names
+	STD_OBTAIN_ITEM = 0
+	STD_FIND_ITEM = 1
+	MSGBOX_NPC = 2
+	MSGBOX_SIGN = 3
+	MSGBOX_DEFAULT = 4
+	MSGBOX_YESNO = 5
+	MSGBOX_AUTOCLOSE = 6
+	STD_OBTAIN_DECORATION = 7
+
+	YES = 1
+	NO  = 0
+	
+	@====================================================================================
+	@ FireRed only
+	@====================================================================================
+	
+	STD_PUT_ITEM_AWAY = 8
+	STD_RECEIVED_ITEM = 9
+	
+	@ Displays the string at pointer as braille text in a standard message box. The string must be formatted to use braille characters.
+	.macro fr_braillemessage text:req
+	.byte 0x78
+	.4byte \text
+	.endm
+	
+	@ Sets the color of the text in standard message boxes. 0x00 produces blue (male) text, 0x01 produces red (female) text, 0xFF resets the color to the default for the current OW's gender, and all other values produce black text.
+	.macro fr_textcolor color:req
+	.byte 0xc7
+	.byte \color
+	.endm
+	
+	@ The exact purpose of this command is unknown, but it is related to the blue help-text box that appears on the bottom of the screen when the Main Menu is opened.
+	.macro fr_loadhelp pointer:req
+	.byte 0xc8
+	.4byte \pointer
+	.endm
+	
+	@ The exact purpose of this command is unknown, but it is related to the blue help-text box that appears on the bottom of the screen when the Main Menu is opened.
+	.macro fr_unloadhelp
+	.byte 0xc9
+	.endm
+	
+	@ After using this command, all standard message boxes will use the signpost frame.
+	.macro fr_signmsg
+	.byte 0xca
+	.endm
+
+	@ Ends the effects of signmsg, returning message box frames to normal.
+	.macro fr_normalmsg
+	.byte 0xcb
+	.endm
+	
+	@ Compares the value of a game stat to a dword.
+	.macro fr_comparestattoword a:req, value:req
+	.byte 0xcc
+	.byte \a
+	.4byte \value
+	.endm
+	
+	@ Sets worldmapflag to 1. This allows the player to Fly to the corresponding map, if that map has a flightspot.
+	.macro fr_setworldmapflag worldmapflag:req
+	.byte 0xd0
+	.2byte \worldmapflag
+	.endm
+	
+	.macro fr_getbraillestringwidth pointer:req
+	.byte 0xd3
+	.4byte \pointer
+	.endm
+
+	.macro fr_bufferitemnameplural out:req, item:req, quantity:req
+	.byte 0xd4
+	.byte \out
+	.2byte \item
+	.2byte \quantity
+	.endm
+	
+	@====================================================================================
+	@ Emerald only
+	@====================================================================================
+	
+	STD_REGISTER_MATCH_CALL = 8
+	MSGBOX_GETPOINTS = 9
+	MSGBOX_POKENAV = 10
+	
+	@ Initializes the RTC`s local time offset to the given hour and minute.
+	.macro initclock hour:req, minute:req
+	.byte 0x2c
+	.2byte \hour
+	.2byte \minute
+	.endm
+	
+		@ Nopped in Emerald, but still consumes parameters.
+	.macro drawboxtext left:req, top:req, multichoiceId:req, ignoreBPress:req
+	.byte 0x74
+	.byte \left
+	.byte \top
+	.byte \multichoiceId
+	.byte \ignoreBPress
+	.endm
+	
+	@ Displays the given string as braille text in a standard message box. The string should use the .braille directive
+	@ to convert text to braille, and be preceded by brailleformat. The brailleformat data is skipped over (in RS, these
+	@ bytes determined the box's size and position, but in Emerald these are calculated automatically).
+	.macro braillemessage text:req
+	.byte 0x78
+	.4byte \text
+	.endm
+	
+	@ Sets a berry tree's berry and growth stage. treeId is any BERRY_TREE_* constant (an index into berryTrees in SaveBlock1),
+	@ berry is any ITEM_TO_BERRY(ITEM_BERRY_NAME) value, and growthStage is any BERRY_STAGE_* constant.
+	.macro setberrytree treeId:req, berry:req, growthStage:req
+	.byte 0x8a
+	.byte \treeId
+	.byte \berry
+	.byte \growthStage
+	.endm
+	
+	@ Gets whether the effects of the specified PokeNews program are active. newsKind is a POKENEWS_* constant.
+	.macro getpokenewsactive newsKind:req
+	.byte 0x96
+	.2byte \newsKind
+	.endm
+	
+	@ Consumes its parameters and does nothing. It is implemented but unused in Ruby/Sapphire.
+	.macro addelevmenuitem a:req, b:req, c:req, d:req
+	.byte 0xb1
+	.byte \a
+	.2byte \b
+	.2byte \c
+	.2byte \d
+	.endm
+	
+	@ For the rotating tile puzzles in Mossdeep Gym / Trick House Room 7. Moves the objects one rotation
+	@ on the colored puzzle specified by puzzleNumber.
+	.macro moverotatingtileobjects puzzleNumber:req
+	.byte 0xd3
+	.2byte \puzzleNumber
+	.endm
+
+	@ For the rotating tile puzzles in Mossdeep Gym / Trick House Room 7. Updates the facing direction of all objects on the puzzle tiles
+	.macro turnrotatingtileobjects
+	.byte 0xd4
+	.endm
+
+	@ For the rotating tile puzzles in Mossdeep Gym / Trick House Room 7. Allocates memory for the puzzle objects.
+	@ isTrickHouse is needed to determine which of the two maps the puzzle is on, in order to know where in the tileset
+	@ the puzzle tiles start (TRUE for Trick House Room, FALSE for Mossdeep Gym).
+	.macro initrotatingtilepuzzle isTrickHouse:req
+	.byte 0xd5
+	.2byte \isTrickHouse
+	.endm
+
+	@ For the rotating tile puzzles in Mossdeep Gym / Trick House Room 7. Frees the memory allocated for the puzzle objects.
+	.macro freerotatingtilepuzzle
+	.byte 0xd6
+	.endm
+
+	@ Warp used by the teleport tiles in the Mossdeep Gym. Plays SE_WARP_IN and does a simple fade transition.
+	@ Also skips reloading object events by setting SKIP_OBJECT_EVENT_LOAD.
+	@ Warp commands can be given either the id of which warp location to go to on the destination map
+	@ or a pair of x/y coordinates to go to directly on the destination map.
+	.macro warpmossdeepgym map:req, a, b, c
+	.byte 0xd7
+	formatwarp \map, \a, \b, \c
+	.endm
+
+	@ Sets the selected object to the id of the currently approaching trainer.
+	.macro selectapproachingtrainer
+	.byte 0xd8
+	.endm
+
+	@ Freezes all objects immediately except the player and the approaching trainers.
+	@ The player and trainers are frozen once their movement is finished.
+	.macro lockfortrainer
+	.byte 0xd9
+	.endm
+
+	@ Destroys the window created by braillemessage.
+	.macro closebraillemessage
+	.byte 0xda
+	.endm
+
+	@ Prints and draws the message all at once rather than character by character.
+	@ Does not wait for player input to continue.
+	.macro messageinstant text:req
+	.byte 0xdb
+	.4byte \text
+	.endm
+
+	@ Equivalent to fadescreen but copies gPlttBufferUnfaded to gPaletteDecompressionBuffer on the fade out
+	@ and the reverse on the fade in, in effect saving gPlttBufferUnfaded to restore it.
+	.macro fadescreenswapbuffers mode:req
+	.byte 0xdc
+	.byte \mode
+	.endm
+
+	@ Buffers the specified trainer's class name to the given string var.
+	@ If the trainer id is >= TRAINERS_COUNT it will be treated as TRAINER_NONE.
+	.macro buffertrainerclassname stringVarId:req, trainerId:req
+	.byte 0xdd
+	stringvar \stringVarId
+	.2byte \trainerId
+	.endm
+
+	@ Buffers the specified trainer's name to the given string var.
+	@ If the trainer id is >= TRAINERS_COUNT it will be treated as TRAINER_NONE.
+	.macro buffertrainername stringVarId:req, trainerId:req
+	.byte 0xde
+	stringvar \stringVarId
+	.2byte \trainerId
+	.endm
+
+	@ Starts a Pokenav call with the given text.
+	.macro pokenavcall text:req
+	.byte 0xdf
+	.4byte \text
+	.endm
+
+	@ Warp with a fade to white. Used during the Sootopolis legendary fight.
+	@ Warp commands can be given either the id of which warp location to go to on the destination map
+	@ or a pair of x/y coordinates to go to directly on the destination map.
+	.macro warpwhitefade map:req, a, b, c
+	.byte 0xe0
+	formatwarp \map, \a, \b, \c
+	.endm
+
+	@ Buffers the name of the contest category to the buffer.
+	@ For example a category of CONTEST_CATEGORY_COOL will buffer the string "COOLNESS CONTEST".
+	.macro buffercontestname stringVarId:req, category:req
+	.byte 0xe1
+	stringvar \stringVarId
+	.2byte \category
+	.endm
+
+	@ Writes the name of the specified item to the specified buffer. If 'item' is a Berry or ITEM_POKE_BALL
+	@ and if the quantity is 2 or more, the buffered string will be pluralized ("IES" or "S" appended).
+	@ If the specified item is >= ITEMS_COUNT then the name of ITEM_NONE ("????????") is buffered instead.
+	.macro bufferitemnameplural stringVarId:req, item:req, quantity:req
+	.byte 0xe2
+	stringvar \stringVarId
+	.2byte \item
+	.2byte \quantity
+	.endm
+	

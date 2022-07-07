@@ -11,6 +11,7 @@
 #include "constants/wild_encounter.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
+	.include "asm/macros/mystery_event.inc"
 	.include "constants/constants.inc"
 
 	.section .rodata

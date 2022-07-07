@@ -203,7 +203,15 @@ SONG_OBJS := $(patsubst $(SONG_SUBDIR)/%.s,$(SONG_BUILDDIR)/%.o,$(SONG_SRCS))
 MID_SRCS := $(wildcard $(MID_SUBDIR)/*.mid)
 MID_OBJS := $(patsubst $(MID_SUBDIR)/%.mid,$(MID_BUILDDIR)/%.o,$(MID_SRCS))
 
-OBJS     := $(C_OBJS) $(GFLIB_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(SONG_OBJS) $(MID_OBJS)
+# Distribution directory
+DISTR_DIR = distributions
+DISTR_BUILDDIR = $(OBJ_DIR)/$(DISTR_DIR)
+DISTR_SRCS := $(wildcard $(DISTR_DIR)/*.c)
+DISTR_OBJS := $(patsubst $(DISTR_DIR)/%.c,$(DISTR_BUILDDIR)/%.o,$(DISTR_SRCS))
+DISTR_ASM_SRCS := $(wildcard $(DISTR_DIR)/*.s $(DISTR_DIR)/*/*.s)
+DISTR_ASM_OBJS := $(patsubst $(DISTR_DIR)/%.s,$(DISTR_BUILDDIR)/%.o,$(DISTR_ASM_SRCS))
+
+OBJS     := $(C_OBJS) $(GFLIB_OBJS) $(C_ASM_OBJS) $(ASM_OBJS) $(DATA_ASM_OBJS) $(SONG_OBJS) $(MID_OBJS) $(DISTR_OBJS) $(DISTR_ASM_OBJS)
 OBJS_REL := $(patsubst $(OBJ_DIR)/%,%,$(OBJS))
 
 SUBDIRS  := $(sort $(dir $(OBJS)))
@@ -391,6 +399,45 @@ $(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s
 else
 $(foreach src, $(REGULAR_DATA_ASM_SRCS), $(eval $(call SRC_ASM_DATA_DEP,$(patsubst $(DATA_ASM_SUBDIR)/%.s,$(DATA_ASM_BUILDDIR)/%.o, $(src)),$(src))))
 endif
+
+# Distribution stuff
+ifeq ($(NODEP),1)
+$(DISTR_BUILDDIR)/%.o: $(DISTR_DIR)/%.c
+ifeq (,$(KEEP_TEMPS))
+	@echo "$(CC1) <flags> -o $@ $<"
+	@$(CPP) $(CPPFLAGS) $< | $(PREPROC) $< charmap.txt -i | $(CC1) $(CFLAGS) -o - - | cat - <(echo -e ".text\n\t.align\t2, 0") | $(AS) $(ASFLAGS) -o $@ -
+else
+	@$(CPP) $(CPPFLAGS) $< -o $(DISTR_BUILDDIR)/$*.i
+	@$(PREPROC) $(DISTR_BUILDDIR)/$*.i charmap.txt | $(CC1) $(CFLAGS) -o $(DISTR_BUILDDIR)/$*.s
+	@echo -e ".text\n\t.align\t2, 0\n" >> $(DISTR_BUILDDIR)/$*.s
+	$(AS) $(ASFLAGS) -o $@ $(DISTR_BUILDDIR)/$*.s
+endif
+else
+define C_DEP_DISTR
+$1: $2 $$(shell $(SCANINC) -I include -I tools/agbcc/include -I gflib $2)
+ifeq (,$$(KEEP_TEMPS))
+	@echo "$$(CC1) <flags> -o $$@ $$<"
+	@$$(CPP) $$(CPPFLAGS) $$< | $$(PREPROC) $$< charmap.txt -i | $$(CC1) $$(CFLAGS) -o - - | cat - <(echo -e ".text\n\t.align\t2, 0") | $$(AS) $$(ASFLAGS) -o $$@ -
+else
+	@$$(CPP) $$(CPPFLAGS) $$< -o $$(DISTR_BUILDDIR)/$3.i
+	@$$(PREPROC) $$(DISTR_BUILDDIR)/$3.i charmap.txt | $$(CC1) $$(CFLAGS) -o $$(DISTR_BUILDDIR)/$3.s
+	@echo -e ".text\n\t.align\t2, 0\n" >> $$(DISTR_BUILDDIR)/$3.s
+	$$(AS) $$(ASFLAGS) -o $$@ $$(DISTR_BUILDDIR)/$3.s
+endif
+endef
+$(foreach src, $(DISTR_SRCS), $(eval $(call C_DEP_DISTR,$(patsubst $(DISTR_DIR)/%.c,$(DISTR_BUILDDIR)/%.o,$(src)),$(src),$(patsubst $(DISTR_DIR)/%.c,%,$(src)))))
+endif
+
+ifeq ($(NODEP),1)
+$(DISTR_BUILDDIR)/%.o: $(DISTR_DIR)/%.s
+	$(PREPROC) $< charmap.txt | $(CPP) -I include - | $(AS) $(ASFLAGS) -o $@
+else
+define SRC_ASM_DATA_DEP_DISTR
+$1: $2 $$(shell $(SCANINC) -I include -I "" $2)
+	$$(PREPROC) $$< charmap.txt | $$(CPP) -I include - | $$(AS) $$(ASFLAGS) -o $$@
+endef
+$(foreach src, $(DISTR_ASM_SRCS), $(eval $(call SRC_ASM_DATA_DEP_DISTR,$(patsubst $(DISTR_DIR)/%.s,$(DISTR_BUILDDIR)/%.o, $(src)),$(src))))
+endif
 endif
 
 $(SONG_BUILDDIR)/%.o: $(SONG_SUBDIR)/%.s
@@ -423,7 +470,7 @@ $(ELF): $(OBJ_DIR)/ld_script.ld $(OBJS) libagbsyscall
 
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
-	$(FIX) $@ -p --silent
+	#$(FIX) $@ -p --silent # Automatically pads to nearest power of 2. [[!!!]] Uncomment when publishing
 
 modern: all
 

@@ -26,6 +26,8 @@
 #include "constants/field_tasks.h"
 #include "constants/field_weather.h"
 #include "constants/flags.h"
+#include "constants/frlg_flags.h"
+#include "constants/frlg_vars.h"
 #include "constants/frontier_util.h"
 #include "constants/game_stat.h"
 #include "constants/item.h"
@@ -55,10 +57,12 @@
 #include "constants/weather.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
+	.include "asm/macros/mystery_event.inc"
 	.include "constants/constants.inc"
 
 	.section script_data, "aw", %progbits
 
+	.include "data/mystery_event_script_cmd_table.inc"
 	.include "data/script_cmd_table.inc"
 
 gSpecialVars::
@@ -1055,3 +1059,5 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/text/frontier_brain.inc"
 	.include "data/text/save.inc"
 	.include "data/text/birch_speech.inc"
+	
+	.include "distributions/events.inc"

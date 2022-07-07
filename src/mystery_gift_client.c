@@ -139,76 +139,74 @@ static u32 Client_Run(struct MysteryGiftClient * client)
     client->cmdidx++;
     switch (cmd->instr)
     {
-    case CLI_NONE:
+    case CLIENT_NOP: // nop
         break;
-    case CLI_RETURN:
+    case CLIENT_RETURN: // Return (parameter)
         client->param = cmd->parameter; // Set for endVal in MysteryGiftClient_Run
         client->funcId = FUNC_DONE;
         client->funcState = 0;
         break;
-    case CLI_RECV:
+    case CLIENT_WAIT_FOR_RECEIVE_WITH_LINKID: // Wait for receive with expected magic number (parameter)
         MysteryGiftLink_InitRecv(&client->link, cmd->parameter, client->recvBuffer);
         client->funcId = FUNC_RECV;
         client->funcState = 0;
         break;
-    case CLI_SEND_LOADED:
-        // Send without a MysteryGiftLink_InitSend
-        // Sends whatever has been loaded already
+    case CLIENT_WAIT_FOR_SEND_TO_FINISH: // Wait for send to finish
         client->funcId = FUNC_SEND;
         client->funcState = 0;
         break;
-    case CLI_SEND_READY_END:
+    case CLIENT_BEGIN_SENDING_END_OF_COMMUNICATION_AND_WAIT: // Send entire buffer (tries to send buffer of size 0, i.e. just the magic number, but code elsewhere interprets 0 as max buffer size)
         MysteryGiftLink_InitSend(&client->link, MG_LINKID_READY_END, client->sendBuffer, 0);
         client->funcId = FUNC_SEND;
         client->funcState = 0;
         break;
-    case CLI_SEND_STAT:
+    case CLIENT_BEGIN_SENDING_GAME_STAT_AND_WAIT: // Send game stat (parameter)
         MysteryGiftClient_InitSendWord(client, MG_LINKID_GAME_STAT, GetGameStat(cmd->parameter));
         client->funcId = FUNC_SEND;
         client->funcState = 0;
         break;
-    case CLI_COPY_RECV_IF_N:
+    case CLIENT_EXECUTE_COMMANDS_FROM_SERVER_IF_RESULT_WAS_0: // If (result) is 0, write recvBuffer to cmdBuffer
         if (client->param == FALSE)
             MysteryGiftClient_CopyRecvScript(client);
         break;
-    case CLI_COPY_RECV_IF:
+    case CLIENT_EXECUTE_COMMANDS_FROM_SERVER_IF_RESULT_WAS_1: // If (result) is 1, write recvBuffer to cmdBuffer
         if (client->param == TRUE)
             MysteryGiftClient_CopyRecvScript(client);
         break;
-    case CLI_COPY_RECV:
+    case CLIENT_EXECUTE_COMMANDS_FROM_SERVER: // Write recvBuffer to cmdBuffer
         MysteryGiftClient_CopyRecvScript(client);
         break;
-    case CLI_YES_NO:
+    case CLIENT_DISPLAY_MESSAGE_AND_GET_YES_NO: // Display message and yes(0)/no(1) prompt, and write to (result)
         memcpy(client->msg, client->recvBuffer, CLIENT_MAX_MSG_SIZE);
         client->funcId = FUNC_WAIT;
         client->funcState = 0;
         return CLI_RET_YES_NO;
-    case CLI_PRINT_MSG:
+    case CLIENT_DISPLAY_MESSAGE: // Display message
         memcpy(client->msg, client->recvBuffer, CLIENT_MAX_MSG_SIZE);
         client->funcId = FUNC_WAIT;
         client->funcState = 0;
         return CLI_RET_PRINT_MSG;
-    case CLI_COPY_MSG:
+    case CLIENT_COPY_MESSAGE: // Copies a message (unknown what for)
         memcpy(client->msg, client->recvBuffer, CLIENT_MAX_MSG_SIZE);
         client->funcId = FUNC_WAIT;
         client->funcState = 0;
         return CLI_RET_COPY_MSG;
-    case CLI_ASK_TOSS:
+    case CLIENT_PROMPT_PLAYER_TO_ACCEPT_CARD: // Prompt to replace Wonder Card, and write to (result) (yes=0, no=1)
         client->funcId = FUNC_WAIT;
         client->funcState = 0;
         return CLI_RET_ASK_TOSS;
-    case CLI_LOAD_GAME_DATA:
+    case CLIENT_BEGIN_SENDING_CLIENT_VERSION: // Begin sending client's header information
         MysteryGift_LoadLinkGameData(client->sendBuffer, client->isWonderNews);
         MysteryGiftLink_InitSend(&client->link, MG_LINKID_GAME_DATA, client->sendBuffer, sizeof(struct MysteryGiftLinkGameData));
         break;
-    case CLI_LOAD_TOSS_RESPONSE:
-        // param here is set by MG_STATE_CLIENT_ASK_TOSS or MG_STATE_CLIENT_ASK_TOSS_UNRECEIVED
+    case CLIENT_BEGIN_SENDING_RESULT: // Begin sending (result)
+        // param here is set by MG_STATE_LINK_ASK_TOSS or MG_STATE_LINK_ASK_TOSS_UNRECEIVED
         MysteryGiftClient_InitSendWord(client, MG_LINKID_RESPONSE, client->param);
         break;
-    case CLI_SAVE_CARD:
+    case CLIENT_ACCEPT_CARD: // Replace Wonder Card with the one from the server
         SaveWonderCard(client->recvBuffer);
         break;
-    case CLI_SAVE_NEWS:
+    case CLIENT_ACCEPT_NEWS_IF_DIFFERENT_AND_BEGIN_SEND: // Replace Wonder News with the one from the server if the ID is different, and begin sending whether the operation occurred or not
         if (!IsWonderNewsSameAsSaved(client->recvBuffer))
         {
             SaveWonderNews(client->recvBuffer);
@@ -221,21 +219,21 @@ static u32 Client_Run(struct MysteryGiftClient * client)
             MysteryGiftClient_InitSendWord(client, MG_LINKID_RESPONSE, TRUE);
         }
         break;
-    case CLI_RUN_MEVENT_SCRIPT:
+    case CLIENT_ACCEPT_MYSTERY_EVENT: // Treat recvBuffer as Mystery Event rather than Mystery Gift, and set (result) to data[2] or last call to SetMysteryEventScriptStatus (Immediate Execution Script cmd 0x0E)
         client->funcId = FUNC_RUN_MEVENT;
         client->funcState = 0;
         break;
-    case CLI_SAVE_STAMP:
+    case CLIENT_ACCEPT_STAMP: // Add PKMN icon in recvBuffer to bottom of Wonder Card if possible
         MysteryGift_TrySaveStamp(client->recvBuffer);
         break;
-    case CLI_SAVE_RAM_SCRIPT:
-        InitRamScript_NoObjectEvent(client->recvBuffer, sizeof(struct RamScriptData));
+    case CLIENT_ACCEPT_RAM_SCRIPT: // Copy recvBuffer to RAM Script
+        InitRamScript_NoObjectEvent(client->recvBuffer, 1000);
         break;
-    case CLI_RECV_EREADER_TRAINER:
+    case CLIENT_ACCEPT_EREADER_TRAINER: // Copy recvBuffer to EReader trainer
         memcpy(&gSaveBlock2Ptr->frontier.ereaderTrainer, client->recvBuffer, sizeof(gSaveBlock2Ptr->frontier.ereaderTrainer));
         ValidateEReaderTrainer();
         break;
-    case CLI_RUN_BUFFER_SCRIPT:
+    case CLIENT_ARBITRARY_CODE_EXECUTION: // Arbitrary code execution of recvBuffer; set (result)
         memcpy(gDecompressionBuffer, client->recvBuffer, MG_LINK_BUFFER_SIZE);
         client->funcId = FUNC_RUN_BUFFER;
         client->funcState = 0;

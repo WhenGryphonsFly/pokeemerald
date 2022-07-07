@@ -25,6 +25,7 @@
 #include "title_screen.h"
 #include "constants/rgb.h"
 #include "constants/battle_anim.h"
+#include "main_menu.h"
 
 /*
     The intro is grouped into the following scenes
@@ -1048,7 +1049,7 @@ static void MainCB2_Intro(void)
 static void MainCB2_EndIntro(void)
 {
     if (!UpdatePaletteFade())
-        SetMainCallback2(CB2_InitTitleScreen);
+        SetMainCallback2(CB2_InitMainMenu);
 }
 
 static void LoadCopyrightGraphics(u16 tilesetAddress, u16 tilemapAddress, u16 paletteAddress)

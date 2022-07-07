@@ -14,5 +14,24 @@ void CB2_InitEReader(void);
 void CB2_InitMysteryGift(void);
 void MG_DrawTextBorder(u8 windowId);
 s8 DoMysteryGiftYesNo(u8 *textState, u16 *windowId, bool8 yesNoBoxPlacement, const u8 *str);
+bool32 ExitWonderCardOrNews(bool32 isWonderNews, bool32 useCancel);
+
+struct MysteryGiftTaskData
+{
+    u16 var; // Multipurpose
+    u16 unused1;
+    u16 unused2;
+    u16 unused3;
+    u8 state;
+    u8 textState;
+    u8 unused4;
+    u8 unused5;
+    bool8 isWonderNews;
+    bool8 sourceIsFriend;
+    u8 msgId;
+    u8 * clientMsg;
+    
+    u32 source;
+};
 
 #endif //GUARD_MYSTERY_GIFT_MENU_H

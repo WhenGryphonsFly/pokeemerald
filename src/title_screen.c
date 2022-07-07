@@ -42,7 +42,6 @@ static void Task_TitleScreenPhase3(u8);
 static void CB2_GoToMainMenu(void);
 static void CB2_GoToClearSaveDataScreen(void);
 static void CB2_GoToResetRtcScreen(void);
-static void CB2_GoToBerryFixScreen(void);
 static void CB2_GoToCopyrightScreen(void);
 static void UpdateLegendaryMarkingColor(u8);
 
@@ -764,7 +763,7 @@ static void Task_TitleScreenPhase3(u8 taskId)
         if ((gMPlayInfo_BGM.status & 0xFFFF) == 0)
         {
             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 0x10, RGB_WHITEALPHA);
-            SetMainCallback2(CB2_GoToCopyrightScreen);
+            SetMainCallback2(CB2_GoToMainMenu);
         }
     }
 }
@@ -793,7 +792,7 @@ static void CB2_GoToResetRtcScreen(void)
         SetMainCallback2(CB2_InitResetRtcScreen);
 }
 
-static void CB2_GoToBerryFixScreen(void)
+void CB2_GoToBerryFixScreen(void)
 {
     if (!UpdatePaletteFade())
     {

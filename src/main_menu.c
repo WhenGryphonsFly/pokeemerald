@@ -36,6 +36,10 @@
 #include "title_screen.h"
 #include "window.h"
 #include "mystery_gift_menu.h"
+#include "load_save.h"
+#include "new_game.h"
+#include "m4a.h"
+#include "malloc.h"
 
 /*
  * Main menu state machine
@@ -543,6 +547,14 @@ static void VBlankCB_MainMenu(void)
 
 void CB2_InitMainMenu(void)
 {
+    SetSaveBlocksPointers(GetSaveBlocksPointersBaseOffset());
+    ResetMenuAndMonGlobals();
+    Save_ResetSaveCounters();
+    LoadGameSave(SAVE_NORMAL);
+    if (gSaveFileStatus == SAVE_STATUS_EMPTY || gSaveFileStatus == SAVE_STATUS_CORRUPT)
+        Sav2_ClearSetDefault();
+    SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
+    InitHeap(gHeap, HEAP_SIZE);
     InitMainMenu(FALSE);
 }
 
@@ -1052,9 +1064,9 @@ static void Task_HandleMainMenuAPressed(u8 taskId)
         ChangeBgY(1, 0, BG_COORD_SET);
         switch (action)
         {
-            case ACTION_NEW_GAME:
+            //case ACTION_NEW_GAME:
             default:
-                gPlttBufferUnfaded[0] = RGB_BLACK;
+                /*gPlttBufferUnfaded[0] = RGB_BLACK;
                 gPlttBufferFaded[0] = RGB_BLACK;
                 gTasks[taskId].func = Task_NewGameBirchSpeech_Init;
                 break;
@@ -1068,7 +1080,7 @@ static void Task_HandleMainMenuAPressed(u8 taskId)
                 gMain.savedCallback = CB2_ReinitMainMenu;
                 SetMainCallback2(CB2_InitOptionMenu);
                 DestroyTask(taskId);
-                break;
+                break;*/
             case ACTION_MYSTERY_GIFT:
                 SetMainCallback2(CB2_InitMysteryGift);
                 DestroyTask(taskId);

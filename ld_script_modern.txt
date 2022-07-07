@@ -52,12 +52,14 @@ SECTIONS {
         src/*.o(.text*);
         gflib/*.o(.text*);
         asm/*.o(.text*);
+        distributions/*.o(.text*);
     } =0
 
     script_data :
     ALIGN(4)
     {
 		data/*.o(script_data);
+		distributions/*.o(script_data);
     } =0
 
     lib_text :
@@ -87,6 +89,7 @@ SECTIONS {
         src/*.o(.rodata*);
         gflib/*.o(.rodata*);
         data/*.o(.rodata*);
+        distributions/*.o(.rodata*);
     } =0
 
     song_data :

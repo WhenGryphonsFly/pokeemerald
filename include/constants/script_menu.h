@@ -165,4 +165,116 @@
 #define STDSTRING_BATTLE_PIKE      28
 #define STDSTRING_BATTLE_PYRAMID   29
 
+//==============================================================//
+// FireRed
+
+#define FR_SCR_MENU_CANCEL 127
+#define FR_SCR_MENU_UNSET  255
+
+#define FR_MULTICHOICE_YES_NO                                      0
+#define FR_MULTICHOICE_EEVEELUTIONS                                1
+#define FR_MULTICHOICE_TRAINER_CARD_ICON_TINT                      2
+#define FR_MULTICHOICE_HOF_QUIT                                    3
+#define FR_MULTICHOICE_EGGS_QUIT                                   4
+#define FR_MULTICHOICE_VICTORIES_QUIT                              5
+#define FR_MULTICHOICE_HOF_EGGS_QUIT                               6
+#define FR_MULTICHOICE_HOF_VICTORIES_QUIT                          7
+#define FR_MULTICHOICE_EGGS_VICTORIES_QUIT                         8
+#define FR_MULTICHOICE_HOF_EGGS_VICTORIES_QUIT                     9
+#define FR_MULTICHOICE_EXIT                                       10
+#define FR_MULTICHOICE_EXIT_2                                     11
+#define FR_MULTICHOICE_EXIT_3                                     12
+#define FR_MULTICHOICE_BIKE_SHOP                                  13
+#define FR_MULTICHOICE_GAME_CORNER_POKEMON_PRIZES                 14
+#define FR_MULTICHOICE_TRAINER_SCHOOL_WHITEBOARD                  15
+#define FR_MULTICHOICE_YES_NO_INFO                                16
+#define FR_MULTICHOICE_SINGLE_DOUBLE_MULTI_INFO_EXIT              17
+#define FR_MULTICHOICE_YES_NO_INFO_2                              18
+#define FR_MULTICHOICE_CHALLENGE_INFO_EXIT                        19
+#define FR_MULTICHOICE_ROOFTOP_B1F                                20
+#define FR_MULTICHOICE_HELIX                                      21
+#define FR_MULTICHOICE_DOME                                       22
+#define FR_MULTICHOICE_AMBER                                      23
+#define FR_MULTICHOICE_HELIX_AMBER                                24
+#define FR_MULTICHOICE_DOME_AMBER                                 25
+#define FR_MULTICHOICE_CELADON_VENDING_MACHINE                    26
+#define FR_MULTICHOICE_GAME_CORNER_COIN_PURCHASE_COUNTER          27
+#define FR_MULTICHOICE_EXCELLENT_NOT_SO_BAD                       28
+#define FR_MULTICHOICE_RIGHT_LEFT                                 29
+#define FR_MULTICHOICE_GAME_CORNER_TMPRIZES                       30
+#define FR_MULTICHOICE_DEPT_STORE_ELEVATOR                        31
+#define FR_MULTICHOICE_THIRSTY_GIRL_FRESH_WATER                   32
+#define FR_MULTICHOICE_THIRSTY_GIRL_SODA_POP                      33
+#define FR_MULTICHOICE_THIRSTY_GIRL_FRESH_WATER_SODA_POP          34
+#define FR_MULTICHOICE_THIRSTY_GIRL_LEMONADE                      35
+#define FR_MULTICHOICE_THIRSTY_GIRL_FRESH_WATER_LEMONADE          36
+#define FR_MULTICHOICE_THIRSTY_GIRL_SODA_POP_LEMONADE             37
+#define FR_MULTICHOICE_THIRSTY_GIRL_FRESH_WATER_SODA_POP_LEMONADE 38
+#define FR_MULTICHOICE_TRADE_CENTER_COLOSSEUM                     39
+#define FR_MULTICHOICE_LINK_WIRELESS                              40
+#define FR_MULTICHOICE_GAME_CORNER_BATTLE_ITEM_PRIZES             41
+#define FR_MULTICHOICE_ROCKET_HIDEOUT_ELEVATOR                    42
+#define FR_MULTICHOICE_LINKED_DIRECT_UNION                        43
+#define FR_MULTICHOICE_ISLAND_23                                  44
+#define FR_MULTICHOICE_ISLAND_13                                  45
+#define FR_MULTICHOICE_ISLAND_12                                  46
+#define FR_MULTICHOICE_TRADE_COLOSSEUM_CRUSH                      47
+#define FR_MULTICHOICE_48                                         48
+#define FR_MULTICHOICE_POKEJUMP_DODRIO                            49
+#define FR_MULTICHOICE_TRADE_COLOSSEUM_2                          50
+#define FR_MULTICHOICE_MUSHROOMS                                  51
+#define FR_MULTICHOICE_TRADE_COLOSSEUM_BLANK_CRUSH                52
+#define FR_MULTICHOICE_TRADE_COLOSSEUM_BLANK                      53
+#define FR_MULTICHOICE_SEVII_NAVEL                                54
+#define FR_MULTICHOICE_SEVII_BIRTH                                55
+#define FR_MULTICHOICE_SEVII_NAVEL_BIRTH                          56
+#define FR_MULTICHOICE_SEAGALLOP_123                              57
+#define FR_MULTICHOICE_SEAGALLOP_V23                              58
+#define FR_MULTICHOICE_SEAGALLOP_V13                              59
+#define FR_MULTICHOICE_SEAGALLOP_V12                              60
+#define FR_MULTICHOICE_SEAGALLOP_VERMILION                        61
+#define FR_MULTICHOICE_62                                         62
+#define FR_MULTICHOICE_JOIN_OR_LEAD                               63
+#define FR_MULTICHOICE_TRAINER_TOWER_MODE                         64
+
+#define FR_LISTMENU_BADGES                    0
+#define FR_LISTMENU_SILPHCO_FLOORS            1
+#define FR_LISTMENU_ROCKET_HIDEOUT_FLOORS     2
+#define FR_LISTMENU_DEPT_STORE_FLOORS         3
+#define FR_LISTMENU_WIRELESS_LECTURE_HEADERS  4
+#define FR_LISTMENU_BERRY_POWDER              5
+#define FR_LISTMENU_TRAINER_TOWER_FLOORS      6
+
+// Std String Ids
+#define FR_STDSTRING_COOL              0
+#define FR_STDSTRING_BEAUTY            1
+#define FR_STDSTRING_CUTE              2
+#define FR_STDSTRING_SMART             3
+#define FR_STDSTRING_TOUGH             4
+#define FR_STDSTRING_COOL2             5
+#define FR_STDSTRING_BEAUTY2           6
+#define FR_STDSTRING_CUTE2             7
+#define FR_STDSTRING_SMART2            8
+#define FR_STDSTRING_TOUGH2            9
+#define FR_STDSTRING_ITEMS             10
+#define FR_STDSTRING_KEY_ITEMS         11
+#define FR_STDSTRING_POKEBALLS         12
+#define FR_STDSTRING_TMHMS             13
+#define FR_STDSTRING_BERRIES           14
+#define FR_STDSTRING_BOULDER_BADGE     15
+#define FR_STDSTRING_CASCADE_BADGE     16
+#define FR_STDSTRING_THUNDER_BADGE     17
+#define FR_STDSTRING_RAINBOW_BADGE     18
+#define FR_STDSTRING_SOUL_BADGE        19
+#define FR_STDSTRING_MARSH_BADGE       20
+#define FR_STDSTRING_VOLCANO_BADGE     21
+#define FR_STDSTRING_EARTH_BADGE       22
+#define FR_STDSTRING_COINS             23
+#define FR_STDSTRING_ITEMS_POCKET      24
+#define FR_STDSTRING_KEY_ITEMS_POCKET  25
+#define FR_STDSTRING_POKEBALLS_POCKET  26
+#define FR_STDSTRING_TM_CASE           27
+#define FR_STDSTRING_BERRY_POUCH       28
+
+
 #endif //GUARD_SCRIPT_MENU_CONSTANTS_H

@@ -10,6 +10,7 @@
 #include "new_game.h"
 #include "mystery_gift.h"
 #include "constants/mystery_gift.h"
+#include "AAA.h"
 
 static EWRAM_DATA bool32 sStatsEnabled = FALSE;
 
@@ -214,8 +215,9 @@ u16 GetWonderCardFlagID(void)
 
 void DisableWonderCardSending(struct WonderCard *card)
 {
-    if (card->sendType == SEND_TYPE_ALLOWED)
-        card->sendType = SEND_TYPE_DISALLOWED;
+    /*if (card->sendType == SEND_TYPE_ALLOWED)
+        card->sendType = SEND_TYPE_DISALLOWED;*/
+    return;
 }
 
 static bool32 IsWonderCardFlagIDInValidRange(u16 flagId)
@@ -387,27 +389,9 @@ void MysteryGift_LoadLinkGameData(struct MysteryGiftLinkGameData *data, bool32 i
     data->romHeaderSoftwareVersion = RomHeaderSoftwareVersion;
 }
 
-bool32 MysteryGift_ValidateLinkGameData(const struct MysteryGiftLinkGameData *data, bool32 isWonderNews)
+u32 MysteryGift_ValidateLinkGameData(const struct MysteryGiftLinkGameData *data, bool32 isWonderNews)
 {
-    if (data->validationVar != GAME_DATA_VALID_VAR)
-        return FALSE;
-
-    if (!(data->validationFlag1 & 1))
-        return FALSE;
-
-    if (!(data->validationFlag2 & 1))
-        return FALSE;
-
-    if (!isWonderNews)
-    {
-        if (!(data->validationGiftType1 & GAME_DATA_VALID_GIFT_TYPE_1))
-            return FALSE;
-
-        if (!(data->validationGiftType2 & (GAME_DATA_VALID_GIFT_TYPE_2 | 0x180)))
-            return FALSE;
-    }
-
-    return TRUE;
+    return SHORT_CODE(data->romHeaderGameCode, data->romHeaderSoftwareVersion);
 }
 
 u32 MysteryGift_CompareCardFlags(const u16 *flagId, const struct MysteryGiftLinkGameData *data, const void *unused)

@@ -47,7 +47,6 @@
 #define FLDEFF_USE_WATERFALL             43
 #define FLDEFF_USE_DIVE                  44
 #define FLDEFF_POKEBALL_TRAIL            45
-#define FLDEFF_HEART_ICON                46
 #define FLDEFF_NOP_47                    47
 #define FLDEFF_NOP_48                    48
 #define FLDEFF_ASH_PUFF                  49
@@ -65,9 +64,6 @@
 #define FLDEFF_PCTURN_ON                 61
 #define FLDEFF_HALL_OF_FAME_RECORD       62
 #define FLDEFF_USE_TELEPORT              63
-#define FLDEFF_RAYQUAZA_SPOTLIGHT        64
-#define FLDEFF_DESTROY_DEOXYS_ROCK       65
-#define FLDEFF_MOVE_DEOXYS_ROCK          66
 
 #define FLDEFFOBJ_SHADOW_S              0
 #define FLDEFFOBJ_SHADOW_M              1
@@ -119,5 +115,21 @@
 #define FLDEFF_PAL_TAG_SMALL_SPARKLE      0x100F
 #define FLDEFF_PAL_TAG_HOF_MONITOR        0x1010
 #define FLDEFF_PAL_TAG_UNKNOWN            0x1011
+
+// FireRed Only
+#define FR_FLDEFF_X_ICON                    46
+#define FR_FLDEFF_SMILEY_FACE_ICON          64
+#define FR_FLDEFF_USE_VS_SEEKER             65
+#define FR_FLDEFF_DOUBLE_EXCL_MARK_ICON     66
+#define FR_FLDEFF_MOVE_DEOXYS_ROCK          67
+#define FR_FLDEFF_DESTROY_DEOXYS_ROCK       68
+#define FR_FLDEFF_UNK_45                    69 // TODO: related to fame checker photos
+
+// Emerald Only
+#define FLDEFF_HEART_ICON                46
+#define FLDEFF_RAYQUAZA_SPOTLIGHT        64
+#define FLDEFF_DESTROY_DEOXYS_ROCK       65
+#define FLDEFF_MOVE_DEOXYS_ROCK          66
+
 
 #endif // GUARD_FIELD_EFFECT_CONSTANTS_H
