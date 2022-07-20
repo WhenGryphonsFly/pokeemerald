@@ -3955,10 +3955,9 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
     case MON_DATA_LANGUAGE:            SET8(boxMon->language); break;
     case MON_DATA_MET_GAME:            SET8(boxMon->metGame); break;
     case MON_DATA_MET_LOCATION:        SET16(boxMon->metLocation); break;
-    case MON_DATA_MET_LEVEL:           SET8(boxMon->metLevel) break;
+    case MON_DATA_MET_LEVEL:           SET8(boxMon->metLevel); break;
     case MON_DATA_CHAMPION_RIBBON:     SET8(boxMon->championRibbon); break;
     case MON_DATA_WINNING_RIBBON:      SET8(boxMon->winningRibbon); break;
-    case MON_DATA_MARKINGS:            SET8(boxMon->markings); break;
     case MON_DATA_VICTORY_RIBBON:      SET8(boxMon->victoryRibbon); break;
     case MON_DATA_EFFORT_RIBBON:       SET8(boxMon->effortRibbon); break;
     case MON_DATA_NATIONAL_RIBBON:     SET8(boxMon->nationalRibbon); break;
