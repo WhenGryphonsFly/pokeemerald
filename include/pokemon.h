@@ -5,7 +5,76 @@
 
 struct BoxPokemon
 {
+    u32 species:9;
+    u32 heldItem:9;
+    u32 move1:9;
+    u32 hpIV:5;
+    
+    u32 move2:9;
+    u32 move3:9;
+    u32 move4:9;
+    u32 attackIV:5;
+    
+    u32 isEgg:1;
+    u32 experience:21;
+    u32 defenseIV:5;
+    u32 speedIV:5;
+    
+    u32 personality;
+    u32 otId;
+    
+    u16 spAttackIV:5;
+    u16 spDefenseIV:5;
+    u16 forme:2;
+    u16 pokeball:4;
+    
+    u8 nickname[POKEMON_NAME_LENGTH];
+    u8 friendship;
+    u8 ppBonuses;
+    u8 hpEV;
+    u8 attackEV;
+    u8 defenseEV;
+    u8 speedEV;
+    u8 spAttackEV;
+    u8 spDefenseEV;
+    
+#ifdef BOX_POKEMON_OT_NAME
+    u8 otName[PLAYER_NAME_LENGTH];
+    u8 otGender:1;
+    u8 pokerus:3;
+    u8 markings:4;
+#endif
 
+#ifdef BOX_POKEMON_MET_LOCATION
+    u16 language:3;
+    u16 metGame:4;
+    u16 metLocation:9;
+    
+    u16 metLevel:7;
+    u16 additionalForme:3;
+    u16 championRibbon:1;
+    u16 winningRibbon:1;
+    u16 victoryRibbon:1;
+    u16 effortRibbon:1;
+    u16 nationalRibbon:1;
+    u16 earthRibbon:1;
+#endif
+
+#ifdef BOX_POKEMON_CONTEST
+    u8 cool;
+    u8 beauty;
+    u8 cute;
+    u8 smart;
+    u8 tough;
+    u8 sheen;
+    
+    u16 coolRibbon:3;
+    u16 beautyRibbon:3;
+    u16 cuteRibbon:3;
+    u16 smartRibbon:3;
+    u16 toughRibbon:3;
+    u16 artistRibbon:1;
+#endif
 };
 
 struct Pokemon
