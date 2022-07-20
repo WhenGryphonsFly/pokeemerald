@@ -93,6 +93,19 @@
 // Shiny odds
 #define SHINY_ODDS 8 // Actual probability is SHINY_ODDS/65536
 
+// Pokerus
+#define POKERUS_ODDS     3 // Actual probability is POKERUS_ODDS/65536
+#define POKERUS_MAX_DAYS 4 // Vanilla is 4, maximum is 6
+
+#define POKERUS_NEVER_EXPOSED 0
+#define POKERUS_CURED         1
+#define POKERUS_1_DAY_LEFT    2
+#define POKERUS_2_DAYS_LEFT   3
+#define POKERUS_3_DAYS_LEFT   4
+#define POKERUS_4_DAYS_LEFT   5
+#define POKERUS_5_DAYS_LEFT   6
+#define POKERUS_6_DAYS_LEFT   7
+
 // Flags for Get(Box)MonData / Set(Box)MonData
 #define MON_DATA_PERSONALITY        0
 #define MON_DATA_OT_ID              1
