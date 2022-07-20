@@ -3,6 +3,11 @@
 
 #include "sprite.h"
 
+// By default, BoxPokemon is 60 bytes. By commenting out the below defines, it is possible to save up to 20 bytes.
+#define BOX_POKEMON_OT_NAME
+#define BOX_POKEMON_MET_LOCATION
+#define BOX_POKEMON_CONTEST
+
 struct BoxPokemon
 {
     u32 species:9;
