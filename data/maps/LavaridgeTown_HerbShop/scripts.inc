@@ -6,18 +6,7 @@ LavaridgeTown_HerbShop_EventScript_Clerk::
 	faceplayer
 	message LavaridgeTown_HerbShop_Text_WelcomeToHerbShop
 	waitmessage
-	pokemart LavaridgeTown_HerbShop_Pokemart
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
-	release
-	end
-
-	.align 2
-LavaridgeTown_HerbShop_Pokemart:
-	.2byte ITEM_ENERGY_POWDER
-	.2byte ITEM_ENERGY_ROOT
-	.2byte ITEM_HEAL_POWDER
-	.2byte ITEM_REVIVAL_HERB
-	.2byte ITEM_NONE
 	release
 	end
 
@@ -43,7 +32,9 @@ LavaridgeTown_HerbShop_EventScript_ExplainCharcoal::
 
 LavaridgeTown_HerbShop_Text_WelcomeToHerbShop:
 	.string "Welcome to the HERB SHOP, home of\n"
-	.string "effective and inexpensive medicine!$"
+	.string "effective and inexpensive medicine!\p"
+	.string "Unfortunately, we have sold out of\n"
+	.string "all of our stock.$"
 
 LavaridgeTown_HerbShop_Text_YouveComeToLookAtHerbalMedicine:
 	.string "You've come to look at herbal medicine\n"
@@ -63,4 +54,3 @@ LavaridgeTown_HerbShop_Text_HerbalMedicineWorksButMonWillDislike:
 	.string "Herbal medicine works impressively well.\n"
 	.string "But your POKéMON will dislike you for it.\l"
 	.string "It must be horribly bitter!$"
-

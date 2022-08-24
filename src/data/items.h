@@ -401,58 +401,6 @@ const struct Item gItems[] =
         .battleUseFunc = ItemUseInBattle_Medicine,
     },
 
-    [ITEM_ENERGY_POWDER] =
-    {
-        .name = _("ENERGYPOWDER"),
-        .itemId = ITEM_ENERGY_POWDER,
-        .price = 500,
-        .description = sEnergyPowderDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Medicine,
-        .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_Medicine,
-    },
-
-    [ITEM_ENERGY_ROOT] =
-    {
-        .name = _("ENERGY ROOT"),
-        .itemId = ITEM_ENERGY_ROOT,
-        .price = 800,
-        .description = sEnergyRootDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Medicine,
-        .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_Medicine,
-    },
-
-    [ITEM_HEAL_POWDER] =
-    {
-        .name = _("HEAL POWDER"),
-        .itemId = ITEM_HEAL_POWDER,
-        .price = 450,
-        .description = sHealPowderDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Medicine,
-        .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_Medicine,
-    },
-
-    [ITEM_REVIVAL_HERB] =
-    {
-        .name = _("REVIVAL HERB"),
-        .itemId = ITEM_REVIVAL_HERB,
-        .price = 2800,
-        .description = sRevivalHerbDesc,
-        .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Medicine,
-        .battleUsage = ITEM_B_USE_MEDICINE,
-        .battleUseFunc = ItemUseInBattle_Medicine,
-    },
-
     [ITEM_ETHER] =
     {
         .name = _("ETHER"),

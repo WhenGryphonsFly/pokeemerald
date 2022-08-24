@@ -2257,7 +2257,7 @@ void ShowScrollableMultichoice(void)
         break;
     case SCROLL_MULTI_BERRY_POWDER_VENDOR:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
-        task->tNumItems = 12;
+        task->tNumItems = 8;
         task->tLeft = 15;
         task->tTop = 1;
         task->tWidth = 14;
@@ -2393,10 +2393,6 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
     },
     [SCROLL_MULTI_BERRY_POWDER_VENDOR] =
     {
-        gText_EnergyPowder50,
-        gText_EnergyRoot80,
-        gText_HealPowder50,
-        gText_RevivalHerb300,
         gText_Protein1000,
         gText_Iron1000,
         gText_Carbos1000,

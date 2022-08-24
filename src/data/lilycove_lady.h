@@ -311,7 +311,6 @@ static const u16 sFavorLadyAcceptedItems_Slippery[] =
     ITEM_ICE_HEAL,
     ITEM_REVIVE,
     ITEM_MAX_REVIVE,
-    ITEM_ENERGY_POWDER,
     ITEM_NONE
 };
 
@@ -338,7 +337,6 @@ static const u16 sFavorLadyAcceptedItems_Roundish[] =
 
 static const u16 sFavorLadyAcceptedItems_Whamish[] =
 {
-    ITEM_REVIVAL_HERB,
     ITEM_POTION,
     ITEM_FRESH_WATER,
     ITEM_SODA_POP,
@@ -357,7 +355,6 @@ static const u16 sFavorLadyAcceptedItems_Whamish[] =
 
 static const u16 sFavorLadyAcceptedItems_Shiny[] =
 {
-    ITEM_HEAL_POWDER,
     ITEM_X_SPEED,
     ITEM_X_ATTACK,
     ITEM_X_DEFEND,
@@ -382,7 +379,6 @@ static const u16 sFavorLadyAcceptedItems_Shiny[] =
 
 static const u16 sFavorLadyAcceptedItems_Sticky[] =
 {
-    ITEM_ENERGY_ROOT,
     ITEM_FULL_RESTORE,
     ITEM_MAX_POTION,
     ITEM_DIRE_HIT,
