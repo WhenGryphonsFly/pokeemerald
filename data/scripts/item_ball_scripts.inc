@@ -99,7 +99,7 @@ Route114_EventScript_ItemProtein::
 	end
 
 Route114_EventScript_ItemEnergyPowder::
-	finditem ITEM_ENERGY_POWDER
+	finditem ITEM_SUPER_POTION
 	end
 
 Route115_EventScript_ItemSuperPotion::
@@ -119,7 +119,7 @@ Route115_EventScript_ItemGreatBall::
 	end
 
 Route115_EventScript_ItemHealPowder::
-	finditem ITEM_HEAL_POWDER
+	finditem ITEM_FULL_HEAL
 	end
 
 Route115_EventScript_ItemPPUp::
@@ -239,7 +239,7 @@ Route123_EventScript_ItemPPUp::
 	end
 
 Route123_EventScript_ItemRevivalHerb::
-	finditem ITEM_REVIVAL_HERB
+	finditem ITEM_MAX_REVIVE
 	end
 
 Route124_EventScript_ItemRedShard::
