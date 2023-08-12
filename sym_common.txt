@@ -62,7 +62,6 @@ gReservedSpritePaletteCount:
 	.include "pokedex_cry_screen.o"
 	.include "save.o"
 	.include "battle_tower.o"
-	.include "intro.o"
 	.include "battle_anim_throw.o"
 	.include "battle_factory_screen.o"
 	.include "apprentice.o"

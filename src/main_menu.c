@@ -33,7 +33,6 @@
 #include "task.h"
 #include "text.h"
 #include "text_window.h"
-#include "title_screen.h"
 #include "window.h"
 #include "mystery_gift_menu.h"
 
@@ -1113,7 +1112,7 @@ static void Task_HandleMainMenuBPressed(u8 taskId)
             RemoveScrollIndicatorArrowPair(gTasks[taskId].tScrollArrowTaskId);
         sCurrItemAndOptionMenuCheck = 0;
         FreeAllWindowBuffers();
-        SetMainCallback2(CB2_InitTitleScreen);
+        SetMainCallback2(CB2_InitMainMenu);
         DestroyTask(taskId);
     }
 }

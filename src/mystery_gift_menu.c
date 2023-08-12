@@ -16,7 +16,6 @@
 #include "sound.h"
 #include "mystery_gift_menu.h"
 #include "union_room.h"
-#include "title_screen.h"
 #include "ereader_screen.h"
 #include "international_string_util.h"
 #include "list_menu.h"
@@ -31,6 +30,7 @@
 #include "link_rfu.h"
 #include "wonder_news.h"
 #include "constants/cable_club.h"
+#include "main_menu.h"
 
 enum {
     WIN_HEADER,
@@ -479,7 +479,7 @@ void MainCB_FreeAllBuffersAndReturnToInitTitleScreen(void)
     Free(GetBgTilemapBuffer(1));
     Free(GetBgTilemapBuffer(2));
     Free(GetBgTilemapBuffer(3));
-    SetMainCallback2(CB2_InitTitleScreen);
+    SetMainCallback2(CB2_InitMainMenu);
 }
 
 // Print the text window at the top of the screen with the title and control instructions

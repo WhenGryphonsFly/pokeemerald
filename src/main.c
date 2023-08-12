@@ -20,10 +20,10 @@
 #include "battle.h"
 #include "battle_controllers.h"
 #include "text.h"
-#include "intro.h"
 #include "main.h"
 #include "trainer_hill.h"
 #include "constants/rgb.h"
+#include "main_menu.h"
 
 static void VBlankIntr(void);
 static void HBlankIntr(void);
@@ -178,7 +178,7 @@ static void InitMainCallbacks(void)
     gTrainerHillVBlankCounter = NULL;
     gMain.vblankCounter2 = 0;
     gMain.callback1 = NULL;
-    SetMainCallback2(CB2_InitCopyrightScreenAfterBootup);
+    SetMainCallback2(CB2_InitMainMenu);
     gSaveBlock2Ptr = &gSaveblock2.block;
     gPokemonStoragePtr = &gPokemonStorage.block;
 }
