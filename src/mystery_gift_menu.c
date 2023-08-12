@@ -479,7 +479,7 @@ void MainCB_FreeAllBuffersAndReturnToInitTitleScreen(void)
     Free(GetBgTilemapBuffer(1));
     Free(GetBgTilemapBuffer(2));
     Free(GetBgTilemapBuffer(3));
-    SetMainCallback2(CB2_InitMainMenu);
+    SetMainCallback2(CB2_ReinitMainMenu);
 }
 
 // Print the text window at the top of the screen with the title and control instructions

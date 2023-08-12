@@ -36,6 +36,11 @@
 #include "window.h"
 #include "mystery_gift_menu.h"
 
+#include "load_save.h"
+#include "new_game.h"
+#include "malloc.h"
+#include "m4a.h"
+
 /*
  * Main menu state machine
  * -----------------------
@@ -544,6 +549,15 @@ static void VBlankCB_MainMenu(void)
 
 void CB2_InitMainMenu(void)
 {
+    SetSaveBlocksPointers(GetSaveBlocksPointersBaseOffset());
+    ResetMenuAndMonGlobals();
+    Save_ResetSaveCounters();
+    LoadGameSave(SAVE_NORMAL);
+    if (gSaveFileStatus == SAVE_STATUS_EMPTY || gSaveFileStatus == SAVE_STATUS_CORRUPT)
+        Sav2_ClearSetDefault();
+    SetPokemonCryStereo(gSaveBlock2Ptr->optionsSound);
+    InitHeap(gHeap, HEAP_SIZE);    
+    
     InitMainMenu(FALSE);
 }
 
@@ -1112,7 +1126,7 @@ static void Task_HandleMainMenuBPressed(u8 taskId)
             RemoveScrollIndicatorArrowPair(gTasks[taskId].tScrollArrowTaskId);
         sCurrItemAndOptionMenuCheck = 0;
         FreeAllWindowBuffers();
-        SetMainCallback2(CB2_InitMainMenu);
+        SetMainCallback2(CB2_ReinitMainMenu);
         DestroyTask(taskId);
     }
 }
