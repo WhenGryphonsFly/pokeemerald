@@ -41,130 +41,6 @@
 #include "malloc.h"
 #include "m4a.h"
 
-/*
- * Main menu state machine
- * -----------------------
- *
- * Entry point: CB2_InitMainMenu
- *
- * Note: States advance sequentially unless otherwise stated.
- *
- * CB2_InitMainMenu / CB2_ReinitMainMenu
- *  - Both of these states call InitMainMenu, which does all the work.
- *  - In the Reinit case, the init code will check if the user came from
- *    the options screen. If they did, then the options menu item is
- *    pre-selected.
- *
- * Task_MainMenuCheckSaveFile
- *  - Determines how many menu options to show based on whether
- *    the save file is Ok, empty, corrupted, etc.
- *  - If there was an error loading the save file, advance to
- *    Task_WaitForSaveFileErrorWindow.
- *  - If there were no errors, advance to Task_MainMenuCheckBattery.
- *  - Note that the check to enable Mystery Events would normally happen
- *    here, but this version of Emerald has them disabled.
- *
- * Task_WaitForSaveFileErrorWindow
- *  - Wait for the text to finish printing and then for the A button
- *    to be pressed.
- *
- * Task_MainMenuCheckBattery
- *  - If the battery is OK, advance to Task_DisplayMainMenu.
- *  - If the battery is dry, advance to Task_WaitForBatteryDryErrorWindow.
- *
- * Task_WaitForBatteryDryErrorWindow
- *  - Wait for the text to finish printing and then for the A button
- *    to be pressed.
- *
- * Task_DisplayMainWindow
- *  - Display the buttons to the user. If the menu is in HAS_MYSTERY_EVENTS
- *    mode, there are too many buttons for one screen and a scrollbar is added,
- *    and the scrollbar task is spawned (Task_ScrollIndicatorArrowPairOnMainMenu).
- *
- * Task_HighlightSelectedMainMenuItem
- *  - Update the UI to match the currently selected item.
- *
- * Task_HandleMainMenuInput
- *  - If A is pressed, advance to Task_HandleMainMenuAPressed.
- *  - If B is pressed, return to the title screen via CB2_InitTitleScreen.
- *  - If Up or Down is pressed, handle scrolling if there is a scroll bar, change
- *    the selection, then go back to Task_HighlightSelectedMainMenuItem.
- *
- * Task_HandleMainMenuAPressed
- *  - If the user selected New Game, advance to Task_NewGameBirchSpeech_Init.
- *  - If the user selected Continue, advance to CB2_ContinueSavedGame.
- *  - If the user selected the Options menu, advance to CB2_InitOptionMenu.
- *  - If the user selected Mystery Gift, advance to CB2_InitMysteryGift. However,
- *    if the wireless adapter was removed, instead advance to
- *    Task_DisplayMainMenuInvalidActionError.
- *  - Code to start a Mystery Event is present here, but is unreachable in this
- *    version.
- *
- * Task_HandleMainMenuBPressed
- *  - Clean up the main menu and go back to CB2_InitTitleScreen.
- *
- * Task_DisplayMainMenuInvalidActionError
- *  - Print one of three different error messages, wait for the text to stop
- *    printing, and then wait for A or B to be pressed.
- * - Then advance to Task_HandleMainMenuBPressed.
- *
- * Task_NewGameBirchSpeech_Init
- *  - Load the sprites for the intro speech, start playing music
- * Task_NewGameBirchSpeech_WaitToShowBirch
- *  - Spawn Task_NewGameBirchSpeech_FadeInTarget1OutTarget2
- *  - Spawn Task_NewGameBirchSpeech_FadePlatformOut
- *  - Both of these tasks destroy themselves when done.
- * Task_NewGameBirchSpeech_WaitForSpriteFadeInWelcome
- * Task_NewGameBirchSpeech_ThisIsAPokemon
- *  - When the text is done printing, spawns Task_NewGameBirchSpeechSub_InitPokeball
- * Task_NewGameBirchSpeech_MainSpeech
- * Task_NewGameBirchSpeech_AndYouAre
- * Task_NewGameBirchSpeech_StartBirchLotadPlatformFade
- * Task_NewGameBirchSpeech_StartBirchLotadPlatformFade
- * Task_NewGameBirchSpeech_SlidePlatformAway
- * Task_NewGameBirchSpeech_StartPlayerFadeIn
- * Task_NewGameBirchSpeech_WaitForPlayerFadeIn
- * Task_NewGameBirchSpeech_BoyOrGirl
- * Task_NewGameBirchSpeech_WaitToShowGenderMenu
- * Task_NewGameBirchSpeech_ChooseGender
- *  - Animates by advancing to Task_NewGameBirchSpeech_SlideOutOldGenderSprite
- *    whenever the player's selection changes.
- *  - Advances to Task_NewGameBirchSpeech_WhatsYourName when done.
- *
- * Task_NewGameBirchSpeech_SlideOutOldGenderSprite
- * Task_NewGameBirchSpeech_SlideInNewGenderSprite
- *  - Returns back to Task_NewGameBirchSpeech_ChooseGender.
- *
- * Task_NewGameBirchSpeech_WhatsYourName
- * Task_NewGameBirchSpeech_WaitForWhatsYourNameToPrint
- * Task_NewGameBirchSpeech_WaitPressBeforeNameChoice
- * Task_NewGameBirchSpeech_StartNamingScreen
- * C2_NamingScreen
- *  - Returns to CB2_NewGameBirchSpeech_ReturnFromNamingScreen when done
- * CB2_NewGameBirchSpeech_ReturnFromNamingScreen
- * Task_NewGameBirchSpeech_ReturnFromNamingScreenShowTextbox
- * Task_NewGameBirchSpeech_SoItsPlayerName
- * Task_NewGameBirchSpeech_CreateNameYesNo
- * Task_NewGameBirchSpeech_ProcessNameYesNoMenu
- *  - If confirmed, advance to Task_NewGameBirchSpeech_SlidePlatformAway2.
- *  - Otherwise, return to Task_NewGameBirchSpeech_BoyOrGirl.
- *
- * Task_NewGameBirchSpeech_SlidePlatformAway2
- * Task_NewGameBirchSpeech_ReshowBirchLotad
- * Task_NewGameBirchSpeech_WaitForSpriteFadeInAndTextPrinter
- * Task_NewGameBirchSpeech_AreYouReady
- * Task_NewGameBirchSpeech_ShrinkPlayer
- * Task_NewGameBirchSpeech_WaitForPlayerShrink
- * Task_NewGameBirchSpeech_FadePlayerToWhite
- * Task_NewGameBirchSpeech_Cleanup
- *  - Advances to CB2_NewGame.
- *
- * Task_NewGameBirchSpeechSub_InitPokeball
- *  - Advances to Task_NewGameBirchSpeechSub_WaitForLotad
- * Task_NewGameBirchSpeechSub_WaitForLotad
- *  - Destroys itself when done.
- */
-
 #define OPTION_MENU_FLAG (1 << 15)
 
 // Static type declarations
@@ -191,7 +67,6 @@ static void HighlightSelectedMainMenuItem(u8, u8, s16);
 static void Task_HandleMainMenuInput(u8);
 static void Task_HandleMainMenuAPressed(u8);
 static void Task_HandleMainMenuBPressed(u8);
-static void Task_NewGameBirchSpeech_Init(u8);
 static void Task_DisplayMainMenuInvalidActionError(u8);
 static void AddBirchSpeechObjects(u8);
 static void Task_NewGameBirchSpeech_WaitToShowBirch(u8);
@@ -1065,18 +940,6 @@ static void Task_HandleMainMenuAPressed(u8 taskId)
         ChangeBgY(1, 0, BG_COORD_SET);
         switch (action)
         {
-            /*case ACTION_NEW_GAME:
-            default:
-                gPlttBufferUnfaded[0] = RGB_BLACK;
-                gPlttBufferFaded[0] = RGB_BLACK;
-                gTasks[taskId].func = Task_NewGameBirchSpeech_Init;
-                break;
-            case ACTION_CONTINUE:
-                gPlttBufferUnfaded[0] = RGB_BLACK;
-                gPlttBufferFaded[0] = RGB_BLACK;
-                SetMainCallback2(CB2_ContinueSavedGame);
-                DestroyTask(taskId);
-                break;*/
             case ACTION_OPTION:
                 gMain.savedCallback = CB2_ReinitMainMenu;
                 SetMainCallback2(CB2_InitOptionMenu);

@@ -1,0 +1,53 @@
+
+    ();
+    ();
+    ResetGabbyAndTy();
+    ClearSecretBases();
+    ClearBerryTrees();
+    SetMoney(&gSaveBlock1Ptr->money, 3000);
+    SetCoins(0);
+    ResetLinkContestBoolean();
+    ResetGameStats();
+    ClearAllContestWinnerPics();
+    ClearPlayerLinkBattleRecords();
+    InitSeedotSizeRecord();
+    InitLotadSizeRecord();
+    ZeroPlayerPartyMons();
+    ResetPokemonStorageSystem();
+    ClearRoamerData();
+    ClearRoamerLocationData();
+    ClearBag();
+    NewGameInitPCItems();
+    ClearPokeblocks();
+    ClearDecorationInventories();
+    InitEasyChatPhrases();
+    SetMauvilleOldMan();
+    InitDewfordTrend();
+    ResetFanClub();
+    ResetLotteryCorner();
+    WarpToTruck();
+    RunScriptImmediately(EventScript_ResetAllMapFlags);
+    ResetMiniGamesRecords();
+    InitUnionRoomChatRegisteredTexts();
+    InitLilycoveLady();
+    ResetAllApprenticeData();
+    ClearRankingHallRecords();
+    InitMatchCallCounters();
+    ClearMysteryGift();
+    WipeTrainerNameRecords();
+    ResetTrainerHillResults();
+    ResetContestLinkResults();
+--------------------------------------------
+ExecuteTruckSequence
+ResetPokedex
+ClearFrontierRecord
+ClearSav1
+ClearAllMail
+InitPlayerTrainerId
+PlayTimeCounter_Reset
+ClearPokedexFlags
+InitEventData
+ClearTVShowData
+
+============================================
+CB2_ContinueSavedGame

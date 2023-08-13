@@ -146,66 +146,6 @@ void ResetMenuAndMonGlobals(void)
     ResetPokeblockScrollPositions();
 }
 
-void NewGameInitData(void)
-{
-    if (gSaveFileStatus == SAVE_STATUS_EMPTY || gSaveFileStatus == SAVE_STATUS_CORRUPT)
-        RtcReset();
-
-    gDifferentSaveFile = TRUE;
-    gSaveBlock2Ptr->encryptionKey = 0;
-    ZeroPlayerPartyMons();
-    ZeroEnemyPartyMons();
-    ResetPokedex();
-    ClearFrontierRecord();
-    ClearSav1();
-    ClearAllMail();
-    gSaveBlock2Ptr->specialSaveWarpFlags = 0;
-    gSaveBlock2Ptr->gcnLinkFlags = 0;
-    InitPlayerTrainerId();
-    PlayTimeCounter_Reset();
-    ClearPokedexFlags();
-    InitEventData();
-    ClearTVShowData();
-    ResetGabbyAndTy();
-    ClearSecretBases();
-    ClearBerryTrees();
-    SetMoney(&gSaveBlock1Ptr->money, 3000);
-    SetCoins(0);
-    ResetLinkContestBoolean();
-    ResetGameStats();
-    ClearAllContestWinnerPics();
-    ClearPlayerLinkBattleRecords();
-    InitSeedotSizeRecord();
-    InitLotadSizeRecord();
-    gPlayerPartyCount = 0;
-    ZeroPlayerPartyMons();
-    ResetPokemonStorageSystem();
-    ClearRoamerData();
-    ClearRoamerLocationData();
-    gSaveBlock1Ptr->registeredItem = ITEM_NONE;
-    ClearBag();
-    NewGameInitPCItems();
-    ClearPokeblocks();
-    ClearDecorationInventories();
-    InitEasyChatPhrases();
-    SetMauvilleOldMan();
-    InitDewfordTrend();
-    ResetFanClub();
-    ResetLotteryCorner();
-    WarpToTruck();
-    RunScriptImmediately(EventScript_ResetAllMapFlags);
-    ResetMiniGamesRecords();
-    InitUnionRoomChatRegisteredTexts();
-    InitLilycoveLady();
-    ResetAllApprenticeData();
-    ClearRankingHallRecords();
-    InitMatchCallCounters();
-    ClearMysteryGift();
-    WipeTrainerNameRecords();
-    ResetTrainerHillResults();
-    ResetContestLinkResults();
-}
-
 static void ResetMiniGamesRecords(void)
 {
     CpuFill16(0, &gSaveBlock2Ptr->berryCrush, sizeof(struct BerryCrush));
