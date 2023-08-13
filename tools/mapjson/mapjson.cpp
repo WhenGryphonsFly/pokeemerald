@@ -446,53 +446,6 @@ string generate_events_text(Json groups_data) {
     return text.str();
 }
 
-string generate_map_constants_text(string groups_filepath, Json groups_data) {
-    string file_dir = get_directory_name(groups_filepath);
-    char dir_separator = file_dir.back();
-
-    ostringstream text;
-
-    text << "#ifndef GUARD_CONSTANTS_MAP_GROUPS_H\n"
-         << "#define GUARD_CONSTANTS_MAP_GROUPS_H\n\n";
-
-    text << "//\n// DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/map_groups.json\n//\n\n";
-
-    int group_num = 0;
-
-    for (auto &group : groups_data["group_order"].array_items()) {
-        string groupName = json_to_string(group);
-        text << "// " << groupName << "\n";
-        vector<string> map_ids;
-        size_t max_length = 0;
-
-        for (auto &map_name : groups_data[groupName].array_items()) {
-            string map_filepath = file_dir + json_to_string(map_name) + dir_separator + "map.json";
-            string err_str;
-            Json map_data = Json::parse(read_text_file(map_filepath), err_str);
-            if (map_data == Json())
-                FATAL_ERROR("%s: %s\n", map_filepath.c_str(), err_str.c_str());
-            string id = json_to_string(map_data, "id", true);
-            map_ids.push_back(id);
-            if (id.length() > max_length)
-                max_length = id.length();
-        }
-
-        int map_id_num = 0;
-        for (string map_id : map_ids) {
-            text << "#define " << map_id << string((max_length - map_id.length() + 1), ' ')
-                 << "(" << map_id_num++ << " | (" << group_num << " << 8))\n";
-        }
-        text << "\n";
-
-        group_num++;
-    }
-
-    text << "#define MAP_GROUPS_COUNT " << group_num << "\n\n";
-    text << "#endif // GUARD_CONSTANTS_MAP_GROUPS_H\n";
-
-    return text.str();
-}
-
 void process_groups(string groups_filepath) {
     string err;
     Json groups_data = Json::parse(read_text_file(groups_filepath), err);
@@ -504,7 +457,6 @@ void process_groups(string groups_filepath) {
     string connections_text = generate_connections_text(groups_data);
     string headers_text = generate_headers_text(groups_data);
     string events_text = generate_events_text(groups_data);
-    string map_header_text = generate_map_constants_text(groups_filepath, groups_data);
 
     string file_dir = get_directory_name(groups_filepath);
     char s = file_dir.back();
@@ -513,7 +465,6 @@ void process_groups(string groups_filepath) {
     write_text_file(file_dir + "connections.inc", connections_text);
     write_text_file(file_dir + "headers.inc", headers_text);
     write_text_file(file_dir + "events.inc", events_text);
-    write_text_file(file_dir + ".." + s + ".." + s + "include" + s + "constants" + s + "map_groups.h", map_header_text);
 }
 
 string generate_layout_headers_text(Json layouts_data) {
@@ -566,26 +517,6 @@ string generate_layouts_table_text(Json layouts_data) {
     return text.str();
 }
 
-string generate_layouts_constants_text(Json layouts_data) {
-    ostringstream text;
-
-    text << "#ifndef GUARD_CONSTANTS_LAYOUTS_H\n"
-         << "#define GUARD_CONSTANTS_LAYOUTS_H\n\n";
-
-    text << "//\n// DO NOT MODIFY THIS FILE! It is auto-generated from data/layouts/layouts.json\n//\n\n";
-
-    int i = 1;
-    for (auto &layout : layouts_data["layouts"].array_items()) {
-        if (layout != Json::object())
-            text << "#define " << json_to_string(layout, "id") << " " << i << "\n";
-        i++;
-    }
-
-    text << "\n#endif // GUARD_CONSTANTS_LAYOUTS_H\n";
-
-    return text.str();
-}
-
 void process_layouts(string layouts_filepath) {
     string err;
     Json layouts_data = Json::parse(read_text_file(layouts_filepath), err);
@@ -595,14 +526,12 @@ void process_layouts(string layouts_filepath) {
 
     string layout_headers_text = generate_layout_headers_text(layouts_data);
     string layouts_table_text = generate_layouts_table_text(layouts_data);
-    string layouts_constants_text = generate_layouts_constants_text(layouts_data);
 
     string file_dir = get_directory_name(layouts_filepath);
     char s = file_dir.back();
 
     write_text_file(file_dir + "layouts.inc", layout_headers_text);
     write_text_file(file_dir + "layouts_table.inc", layouts_table_text);
-    write_text_file(file_dir + ".." + s + ".." + s + "include" + s + "constants" + s + "layouts.h", layouts_constants_text);
 }
 
 int main(int argc, char *argv[]) {
