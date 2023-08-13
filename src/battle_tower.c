@@ -2808,6 +2808,15 @@ void ValidateEReaderTrainer(void)
     }
 }
 
+static void SetEReaderTrainerChecksum(struct BattleTowerEReaderTrainer *ereaderTrainer)
+{
+    s32 i;
+
+    ereaderTrainer->checksum = 0;
+    for (i = 0; i < (sizeof(struct BattleTowerEReaderTrainer) - 4) / 4; i++) // - 4, because of the last field being the checksum itself.
+        ereaderTrainer->checksum += ((u32 *)ereaderTrainer)[i];
+}
+
 void ClearEReaderTrainer(struct BattleTowerEReaderTrainer *ereaderTrainer)
 {
     u32 i;
