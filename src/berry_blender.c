@@ -2377,21 +2377,9 @@ static void Debug_SetMaxRPMStage(s16 value)
     sDebug_MaxRPMStage = value;
 }
 
-// Unused
-static s16 Debug_GetMaxRPMStage(void)
-{
-    return sDebug_MaxRPMStage;
-}
-
 static void Debug_SetGameTimeStage(s16 value)
 {
     sDebug_GameTimeStage = value;
-}
-
-// Unued
-static s16 Debug_GetGameTimeStage(void)
-{
-    return sDebug_GameTimeStage;
 }
 
 static void CalculatePokeblock(struct BlenderBerry *berries, struct Pokeblock *pokeblock, u8 numPlayers, u8 *flavors, u16 maxRPM)
@@ -2499,12 +2487,6 @@ static void CalculatePokeblock(struct BlenderBerry *berries, struct Pokeblock *p
 
     for (i = 0; i < FLAVOR_COUNT + 1; i++)
         flavors[i] = sPokeblockFlavors[i];
-}
-
-// Unused
-static void Debug_CalculatePokeblock(struct BlenderBerry* berries, struct Pokeblock* pokeblock, u8 numPlayers, u8 *flavors, u16 maxRPM)
-{
-    CalculatePokeblock(berries, pokeblock, numPlayers, flavors, maxRPM);
 }
 
 static void Debug_SetStageVars(void)

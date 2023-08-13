@@ -799,13 +799,6 @@ void GetCameraFocusCoords(u16 *x, u16 *y)
     *y = gSaveBlock1Ptr->pos.y + MAP_OFFSET;
 }
 
-// Unused
-static void SetCameraCoords(u16 x, u16 y)
-{
-    gSaveBlock1Ptr->pos.x = x;
-    gSaveBlock1Ptr->pos.y = y;
-}
-
 void GetCameraCoords(u16 *x, u16 *y)
 {
     *x = gSaveBlock1Ptr->pos.x;
@@ -862,11 +855,6 @@ static void CopyTilesetToVramUsingHeap(struct Tileset const *tileset, u16 numTil
 
 // Below two are dummied functions from FRLG, used to tint the overworld palettes for the Quest Log
 static void ApplyGlobalTintToPaletteEntries(u16 offset, u16 size)
-{
-
-}
-
-static void ApplyGlobalTintToPaletteSlot(u8 slot, u8 count)
 {
 
 }

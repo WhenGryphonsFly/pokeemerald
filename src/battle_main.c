@@ -81,7 +81,6 @@ static void AskRecordBattle(void);
 static void SpriteCB_MoveWildMonToRight(struct Sprite *sprite);
 static void SpriteCB_WildMonShowHealthbox(struct Sprite *sprite);
 static void SpriteCB_WildMonAnimate(struct Sprite *sprite);
-static void SpriteCB_Flicker(struct Sprite *sprite);
 static void SpriteCB_AnimFaintOpponent(struct Sprite *sprite);
 static void SpriteCB_BlinkVisible(struct Sprite *sprite);
 static void SpriteCB_Idle(struct Sprite *sprite);
@@ -2076,13 +2075,6 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
     return gTrainers[trainerNum].partySize;
 }
 
-// Unused
-static void HBlankCB_Battle(void)
-{
-    if (REG_VCOUNT < DISPLAY_HEIGHT && REG_VCOUNT >= 111)
-        SetGpuReg(REG_OFFSET_BG0CNT, BGCNT_SCREENBASE(24) | BGCNT_TXT256x512);
-}
-
 void VBlankCB_Battle(void)
 {
     // Change gRngSeed every vblank unless the battle could be recorded.
@@ -2710,37 +2702,6 @@ void SpriteCallbackDummy_2(struct Sprite *sprite)
 
 }
 
-#define sNumFlickers data[3]
-#define sDelay       data[4]
-
-// Unused
-static void SpriteCB_InitFlicker(struct Sprite *sprite)
-{
-    sprite->sNumFlickers = 6;
-    sprite->sDelay = 1;
-    sprite->callback = SpriteCB_Flicker;
-}
-
-static void SpriteCB_Flicker(struct Sprite *sprite)
-{
-    sprite->sDelay--;
-    if (sprite->sDelay == 0)
-    {
-        sprite->sDelay = 8;
-        sprite->invisible ^= 1;
-        sprite->sNumFlickers--;
-        if (sprite->sNumFlickers == 0)
-        {
-            sprite->invisible = FALSE;
-            sprite->callback = SpriteCallbackDummy_2;
-            sFlickerArray[0] = 0;
-        }
-    }
-}
-
-#undef sNumFlickers
-#undef sDelay
-
 extern const struct MonCoords gMonFrontPicCoords[];
 extern const struct MonCoords gCastformFrontSpriteCoords[];
 
@@ -2867,12 +2828,6 @@ static void SpriteCB_BattleSpriteSlideLeft(struct Sprite *sprite)
             sprite->data[1] = 0;
         }
     }
-}
-
-// Unused
-static void SetIdleSpriteCallback(struct Sprite *sprite)
-{
-    sprite->callback = SpriteCB_Idle;
 }
 
 static void SpriteCB_Idle(struct Sprite *sprite)
@@ -3692,13 +3647,6 @@ static void BattleIntroRecordMonsToDex(void)
     }
 }
 
-// Unused
-static void BattleIntroSkipRecordMonsToDex(void)
-{
-    if (gBattleControllerExecFlags == 0)
-        gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
-}
-
 static void BattleIntroPrintPlayerSendsOut(void)
 {
     if (gBattleControllerExecFlags == 0)
@@ -3794,28 +3742,6 @@ static void BattleIntroPlayer1SendsOutMonAnimation(void)
     gBattleStruct->overworldWeatherDone = FALSE;
 
     gBattleMainFunc = TryDoEventsBeforeFirstTurn;
-}
-
-// Unused
-static void BattleIntroSwitchInPlayerMons(void)
-{
-    if (gBattleControllerExecFlags == 0)
-    {
-        for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
-        {
-            if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-            {
-                BtlController_EmitSwitchInAnim(BUFFER_A, gBattlerPartyIndexes[gActiveBattler], FALSE);
-                MarkBattlerForControllerExec(gActiveBattler);
-            }
-        }
-
-        gBattleStruct->switchInAbilitiesCounter = 0;
-        gBattleStruct->switchInItemsCounter = 0;
-        gBattleStruct->overworldWeatherDone = FALSE;
-
-        gBattleMainFunc = TryDoEventsBeforeFirstTurn;
-    }
 }
 
 static void TryDoEventsBeforeFirstTurn(void)

@@ -2007,15 +2007,6 @@ static void LoadObjectEventPalette(u16 paletteTag)
         LoadSpritePaletteIfTagExists(&sObjectEventSpritePalettes[i]);
 }
 
-// Unused
-static void LoadObjectEventPaletteSet(u16 *paletteTags)
-{
-    u8 i;
-
-    for (i = 0; paletteTags[i] != OBJ_EVENT_PAL_TAG_NONE; i++)
-        LoadObjectEventPalette(paletteTags[i]);
-}
-
 static u8 LoadSpritePaletteIfTagExists(const struct SpritePalette *spritePalette)
 {
     if (IndexOfSpritePaletteTag(spritePalette->tag) != 0xFF)
@@ -2088,15 +2079,6 @@ void LoadSpecialObjectReflectionPalette(u16 tag, u8 slot)
 static void _PatchObjectPalette(u16 tag, u8 slot)
 {
     PatchObjectPalette(tag, slot);
-}
-
-// Unused
-static void IncrementObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
-{
-    objectEvent->previousCoords.x = objectEvent->currentCoords.x;
-    objectEvent->previousCoords.y = objectEvent->currentCoords.y;
-    objectEvent->currentCoords.x += x;
-    objectEvent->currentCoords.y += y;
 }
 
 void ShiftObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
@@ -2290,18 +2272,6 @@ void CameraObjectSetFollowedSpriteId(u8 spriteId)
     }
 }
 
-// Unused
-static u8 CameraObjectGetFollowedSpriteId(void)
-{
-    struct Sprite *camera;
-
-    camera = FindCameraSprite();
-    if (camera == NULL)
-        return MAX_SPRITES;
-
-    return camera->sLinkedSpriteId;
-}
-
 void CameraObjectReset2(void)
 {
     // UB: Possible null dereference
@@ -2386,34 +2356,6 @@ static u16 GetObjectEventFlagIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGrou
 static u16 GetObjectEventFlagIdByObjectEventId(u8 objectEventId)
 {
     return GetObjectEventFlagIdByLocalIdAndMap(gObjectEvents[objectEventId].localId, gObjectEvents[objectEventId].mapNum, gObjectEvents[objectEventId].mapGroup);
-}
-
-// Unused
-static u8 GetObjectTrainerTypeByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
-{
-    u8 objectEventId;
-
-    if (TryGetObjectEventIdByLocalIdAndMap(localId, mapNum, mapGroup, &objectEventId))
-        return 0xFF;
-
-    return gObjectEvents[objectEventId].trainerType;
-}
-
-// Unused
-static u8 GetObjectTrainerTypeByObjectEventId(u8 objectEventId)
-{
-    return gObjectEvents[objectEventId].trainerType;
-}
-
-// Unused
-u8 GetObjectEventBerryTreeIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
-{
-    u8 objectEventId;
-
-    if (TryGetObjectEventIdByLocalIdAndMap(localId, mapNum, mapGroup, &objectEventId))
-        return 0xFF;
-
-    return gObjectEvents[objectEventId].trainerRange_berryTreeId;
 }
 
 u8 GetObjectEventBerryTreeId(u8 objectEventId)
@@ -4761,13 +4703,6 @@ void MoveCoords(u8 direction, s16 *x, s16 *y)
 {
     *x += sDirectionToVectors[direction].x;
     *y += sDirectionToVectors[direction].y;
-}
-
-// Unused
-static void MoveCoordsInMapCoordIncrement(u8 direction, s16 *x, s16 *y)
-{
-    *x += sDirectionToVectors[direction].x << 4;
-    *y += sDirectionToVectors[direction].y << 4;
 }
 
 static void MoveCoordsInDirection(u32 dir, s16 *x, s16 *y, s16 deltaX, s16 deltaY)
@@ -8578,19 +8513,6 @@ static void SpriteCB_VirtualObject(struct Sprite *sprite)
     VirtualObject_UpdateAnim(sprite);
     SetObjectSubpriorityByElevation(sprite->sVirtualObjElev, sprite, 1);
     UpdateObjectEventSpriteInvisibility(sprite, sprite->sInvisible);
-}
-
-// Unused
-static void DestroyVirtualObjects(void)
-{
-    int i;
-
-    for (i = 0; i < MAX_SPRITES; i++)
-    {
-        struct Sprite *sprite = &gSprites[i];
-        if(sprite->inUse && sprite->callback == SpriteCB_VirtualObject)
-            DestroySprite(sprite);
-    }
 }
 
 static int GetVirtualObjectSpriteId(u8 virtualObjId)

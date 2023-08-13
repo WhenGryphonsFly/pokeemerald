@@ -298,15 +298,6 @@ static u16 FreeAndDestroyPicSpriteInternal(u16 spriteId)
     return 0;
 }
 
-static u16 LoadPicSpriteInWindow(u16 species, u32 otId, u32 personality, bool8 isFrontPic, u8 paletteSlot, u8 windowId, bool8 isTrainer)
-{
-    if (DecompressPic_HandleDeoxys(species, personality, isFrontPic, (u8 *)GetWindowAttribute(windowId, WINDOW_TILE_DATA), FALSE))
-        return 0xFFFF;
-
-    LoadPicPaletteBySlot(species, otId, personality, paletteSlot, isTrainer);
-    return 0;
-}
-
 static u16 CreateTrainerCardSprite(u16 species, u32 otId, u32 personality, bool8 isFrontPic, u16 destX, u16 destY, u8 paletteSlot, u8 windowId, bool8 isTrainer)
 {
     u8 *framePics;
@@ -337,12 +328,6 @@ u16 FreeAndDestroyMonPicSprite(u16 spriteId)
     return FreeAndDestroyPicSpriteInternal(spriteId);
 }
 
-// Unused
-static u16 LoadMonPicInWindow(u16 species, u32 otId, u32 personality, bool8 isFrontPic, u8 paletteSlot, u8 windowId)
-{
-    return LoadPicSpriteInWindow(species, otId, personality, isFrontPic, paletteSlot, windowId, FALSE);
-}
-
 // Unused, FRLG only
 u16 CreateTrainerCardMonIconSprite(u16 species, u32 otId, u32 personality, bool8 isFrontPic, u16 destX, u16 destY, u8 paletteSlot, u8 windowId)
 {
@@ -357,12 +342,6 @@ u16 CreateTrainerPicSprite(u16 species, bool8 isFrontPic, s16 x, s16 y, u8 palet
 u16 FreeAndDestroyTrainerPicSprite(u16 spriteId)
 {
     return FreeAndDestroyPicSpriteInternal(spriteId);
-}
-
-// Unused
-static u16 LoadTrainerPicInWindow(u16 species, bool8 isFrontPic, u8 paletteSlot, u8 windowId)
-{
-    return LoadPicSpriteInWindow(species, 0, 0, isFrontPic, paletteSlot, windowId, TRUE);
 }
 
 u16 CreateTrainerCardTrainerPicSprite(u16 species, bool8 isFrontPic, u16 destX, u16 destY, u8 paletteSlot, u8 windowId)

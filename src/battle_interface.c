@@ -187,7 +187,6 @@ static s32 CalcNewBarValue(s32, s32, s32, s32 *, u8, u16);
 static u8 GetScaledExpFraction(s32, s32, s32, u8);
 static void MoveBattleBarGraphically(u8, u8);
 static u8 CalcBarFilledPixels(s32, s32, s32, s32 *, u8 *, u8);
-static void Debug_TestHealthBar_Helper(struct TestingBar *, s32 *, u16 *);
 
 static const struct OamData sOamData_64x32 =
 {
@@ -766,88 +765,6 @@ static const struct WindowTemplate sHealthboxWindowTemplate = {
     .paletteNum = 0,
     .baseBlock = 0
 };
-
-static s32 DummiedOutFunction(s16 unused1, s16 unused2, s32 unused3)
-{
-    return 9;
-}
-
-static void Debug_DrawNumber(s16 number, u16 *dest, bool8 unk)
-{
-    s8 i, j;
-    u8 buff[4];
-
-    for (i = 0; i < 4; i++)
-        buff[i] = 0;
-
-    for (i = 3; ; i--)
-    {
-        if (number > 0)
-        {
-            buff[i] = number % 10;
-            number /= 10;
-        }
-        else
-        {
-            for (; i > -1; i--)
-                buff[i] = 0xFF;
-
-            if (buff[3] == 0xFF)
-                buff[3] = 0;
-            break;
-        }
-    }
-
-    if (!unk)
-    {
-        for (i = 0, j = 0; i < 4; i++)
-        {
-            if (buff[j] == 0xFF)
-            {
-                dest[j + 0x00] &= 0xFC00;
-                dest[j + 0x00] |= 0x1E;
-                dest[i + 0x20] &= 0xFC00;
-                dest[i + 0x20] |= 0x1E;
-            }
-            else
-            {
-                dest[j + 0x00] &= 0xFC00;
-                dest[j + 0x00] |= 0x14 + buff[j];
-                dest[i + 0x20] &= 0xFC00;
-                dest[i + 0x20] |= 0x34 + buff[i];
-            }
-            j++;
-        }
-    }
-    else
-    {
-        for (i = 0; i < 4; i++)
-        {
-            if (buff[i] == 0xFF)
-            {
-                dest[i + 0x00] &= 0xFC00;
-                dest[i + 0x00] |= 0x1E;
-                dest[i + 0x20] &= 0xFC00;
-                dest[i + 0x20] |= 0x1E;
-            }
-            else
-            {
-                dest[i + 0x00] &= 0xFC00;
-                dest[i + 0x00] |= 0x14 + buff[i];
-                dest[i + 0x20] &= 0xFC00;
-                dest[i + 0x20] |= 0x34 + buff[i];
-            }
-        }
-    }
-}
-
-// Unused
-static void Debug_DrawNumberPair(s16 number1, s16 number2, u16 *dest)
-{
-    dest[4] = 0x1E;
-    Debug_DrawNumber(number2, dest, FALSE);
-    Debug_DrawNumber(number1, dest + 5, TRUE);
-}
 
 // Because the healthbox is too large to fit into one sprite, it is divided into two sprites.
 // healthboxLeft  or healthboxMain  is the left part that is used as the 'main' sprite.
@@ -2457,43 +2374,6 @@ static u8 CalcBarFilledPixels(s32 maxValue, s32 oldValue, s32 receivedValue, s32
     }
 
     return filledPixels;
-}
-
-// Unused
-// These two functions seem as if they were made for testing the health bar.
-static s16 Debug_TestHealthBar(struct TestingBar *barInfo, s32 *currValue, u16 *dest, s32 unused)
-{
-    s16 ret, var;
-
-    ret = CalcNewBarValue(barInfo->maxValue,
-                    barInfo->oldValue,
-                    barInfo->receivedValue,
-                    currValue, B_HEALTHBAR_PIXELS / 8, 1);
-    Debug_TestHealthBar_Helper(barInfo, currValue, dest);
-
-    if (barInfo->maxValue < B_HEALTHBAR_PIXELS)
-        var = *currValue >> 8;
-    else
-        var = *currValue;
-
-    DummiedOutFunction(barInfo->maxValue, var, unused);
-
-    return ret;
-}
-
-static void Debug_TestHealthBar_Helper(struct TestingBar *barInfo, s32 *currValue, u16 *dest)
-{
-    u8 pixels[6];
-    u16 src[6];
-    u8 i;
-
-    CalcBarFilledPixels(barInfo->maxValue, barInfo->oldValue,
-                barInfo->receivedValue, currValue, pixels, B_HEALTHBAR_PIXELS / 8);
-
-    for (i = 0; i < 6; i++)
-        src[i] = (barInfo->unkC_0 << 12) | (barInfo->unk10 + pixels[i]);
-
-    CpuCopy16(src, dest, sizeof(src));
 }
 
 static u8 GetScaledExpFraction(s32 oldValue, s32 receivedValue, s32 maxValue, u8 scale)

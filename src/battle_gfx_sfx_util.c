@@ -353,19 +353,6 @@ void SpriteCB_WaitForBattlerBallReleaseAnim(struct Sprite *sprite)
     }
 }
 
-static void UnusedDoBattleSpriteAffineAnim(struct Sprite *sprite, bool8 pointless)
-{
-    sprite->animPaused = TRUE;
-    sprite->callback = SpriteCallbackDummy;
-
-    if (!pointless)
-        StartSpriteAffineAnim(sprite, 1);
-    else
-        StartSpriteAffineAnim(sprite, 1);
-
-    AnimateSprite(sprite);
-}
-
 #define sSpeedX data[0]
 
 void SpriteCB_TrainerSlideIn(struct Sprite *sprite)
@@ -663,11 +650,6 @@ void BattleLoadPlayerMonSpriteGfx(struct Pokemon *mon, u8 battlerId)
         BlendPalette(paletteOffset, 16, 6, RGB_WHITE);
         CpuCopy32(&gPlttBufferFaded[paletteOffset], &gPlttBufferUnfaded[paletteOffset], PLTT_SIZEOF(16));
     }
-}
-
-// Unused
-static void BattleGfxSfxDummy1(void)
-{
 }
 
 void BattleGfxSfxDummy2(u16 species)

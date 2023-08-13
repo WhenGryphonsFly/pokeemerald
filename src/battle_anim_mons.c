@@ -20,7 +20,6 @@
 
 extern const struct OamData gOamData_AffineNormal_ObjNormal_64x64;
 
-static void AnimTranslateLinear_WithFollowup_SetCornerVecX(struct Sprite *sprite);
 static void AnimFastTranslateLinearWaitEnd(struct Sprite *sprite);
 static void AnimThrowProjectile_Step(struct Sprite *sprite);
 static void AnimBattlerTrace(struct Sprite *sprite);
@@ -485,35 +484,6 @@ void TranslateSpriteInGrowingCircle(struct Sprite *sprite)
     }
 }
 
-// Unused
-// Exact shape depends on arguments. Can move in a figure-8-like pattern, or circular, etc.
-static void TranslateSpriteInLissajousCurve(struct Sprite *sprite)
-{
-    if (sprite->sDuration)
-    {
-        sprite->x2 = Sin(sprite->sCirclePosX, sprite->sAmplitude);
-        sprite->y2 = Cos(sprite->sCirclePosY, sprite->sAmplitude);
-        sprite->sCirclePosX += sprite->sCircleSpeedX;
-        sprite->sCirclePosY += sprite->sCircleSpeedY;
-
-        if (sprite->sCirclePosX >= 0x100)
-            sprite->sCirclePosX -= 0x100;
-        else if (sprite->sCirclePosX < 0)
-            sprite->sCirclePosX += 0x100;
-
-        if (sprite->sCirclePosY >= 0x100)
-            sprite->sCirclePosY -= 0x100;
-        else if (sprite->sCirclePosY < 0)
-            sprite->sCirclePosY += 0x100;
-
-        sprite->sDuration--;
-    }
-    else
-    {
-        SetCallbackToStoredInData6(sprite);
-    }
-}
-
 void TranslateSpriteInEllipse(struct Sprite *sprite)
 {
     if (sprite->sDuration)
@@ -568,14 +538,6 @@ void WaitAnimForDuration(struct Sprite *sprite)
 #define sMoveSteps data[0]
 #define sSpeedX    data[1]
 #define sSpeedY    data[2]
-
-// Functionally unused
-static void AnimPosToTranslateLinear(struct Sprite *sprite)
-{
-    ConvertPosDataToTranslateLinearData(sprite);
-    sprite->callback = TranslateSpriteLinear;
-    sprite->callback(sprite);
-}
 
 void ConvertPosDataToTranslateLinearData(struct Sprite *sprite)
 {
@@ -639,16 +601,6 @@ static void TranslateSpriteLinearFixedPointIconFrame(struct Sprite *sprite)
     UpdateMonIconFrame(sprite);
 }
 
-// Unused
-static void TranslateSpriteToBattleTargetPos(struct Sprite *sprite)
-{
-    sprite->sStartX = sprite->x + sprite->x2;
-    sprite->sStartY = sprite->y + sprite->y2;
-    sprite->sTargetX = GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_X_2);
-    sprite->sTargetY = GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_Y_PIC_OFFSET);
-    sprite->callback = AnimPosToTranslateLinear;
-}
-
 // Same as TranslateSpriteLinear but takes an id to specify which sprite to move
 void TranslateSpriteLinearById(struct Sprite *sprite)
 {
@@ -707,28 +659,11 @@ void DestroySpriteAndMatrix(struct Sprite *sprite)
     DestroyAnimSprite(sprite);
 }
 
-// Unused
-static void TranslateSpriteToBattleAttackerPos(struct Sprite *sprite)
-{
-    sprite->sStartX = sprite->x + sprite->x2;
-    sprite->sStartY = sprite->y + sprite->y2;
-    sprite->sTargetX = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_X_2);
-    sprite->sTargetY = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_Y_PIC_OFFSET);
-    sprite->callback = AnimPosToTranslateLinear;
-}
-
 #undef sStepsX
 #undef sStartX
 #undef sTargetX
 #undef sStartY
 #undef sTargetY
-
-// Unused
-static void EndUnkPaletteAnim(struct Sprite *sprite)
-{
-    PaletteStruct_ResetById(sprite->data[5]);
-    DestroySpriteAndMatrix(sprite);
-}
 
 void RunStoredCallbackWhenAffineAnimEnds(struct Sprite *sprite)
 {
@@ -1103,16 +1038,6 @@ void StartAnimLinearTranslation(struct Sprite *sprite)
     sprite->callback(sprite);
 }
 
-// Unused
-static void StartAnimLinearTranslation_SetCornerVecX(struct Sprite *sprite)
-{
-    sprite->data[1] = sprite->x;
-    sprite->data[3] = sprite->y;
-    InitAnimLinearTranslation(sprite);
-    sprite->callback = AnimTranslateLinear_WithFollowup_SetCornerVecX;
-    sprite->callback(sprite);
-}
-
 bool8 AnimTranslateLinear(struct Sprite *sprite)
 {
     u16 v1, v2, x, y;
@@ -1145,14 +1070,6 @@ bool8 AnimTranslateLinear(struct Sprite *sprite)
 
 void AnimTranslateLinear_WithFollowup(struct Sprite *sprite)
 {
-    if (AnimTranslateLinear(sprite))
-        SetCallbackToStoredInData6(sprite);
-}
-
-// Functionally unused
-static void AnimTranslateLinear_WithFollowup_SetCornerVecX(struct Sprite *sprite)
-{
-    AnimSetCenterToCornerVecX(sprite);
     if (AnimTranslateLinear(sprite))
         SetCallbackToStoredInData6(sprite);
 }
@@ -1510,12 +1427,6 @@ u32 GetBattleMonSpritePalettesMask(u8 playerLeft, u8 playerRight, u8 opponentLef
 u8 GetSpritePalIdxByBattler(u8 battler)
 {
     return battler;
-}
-
-// Unused
-static u8 GetSpritePalIdxByPosition(u8 position)
-{
-    return GetBattlerAtPosition(position);
 }
 
 void AnimSpriteOnMonPos(struct Sprite *sprite)
@@ -2010,19 +1921,6 @@ void AnimTask_GetFrustrationPowerLevel(u8 taskId)
         powerLevel = 3;
     gBattleAnimArgs[ARG_RET_ID] = powerLevel;
     DestroyAnimVisualTask(taskId);
-}
-
-// Unused
-static void SetPriorityForVisibleBattlers(u8 priority)
-{
-    if (IsBattlerSpriteVisible(gBattleAnimTarget))
-        gSprites[gBattlerSpriteIds[gBattleAnimTarget]].oam.priority = priority;
-    if (IsBattlerSpriteVisible(gBattleAnimAttacker))
-        gSprites[gBattlerSpriteIds[gBattleAnimAttacker]].oam.priority = priority;
-    if (IsBattlerSpriteVisible(BATTLE_PARTNER(gBattleAnimTarget)))
-        gSprites[gBattlerSpriteIds[BATTLE_PARTNER(gBattleAnimTarget)]].oam.priority = priority;
-    if (IsBattlerSpriteVisible(BATTLE_PARTNER(gBattleAnimAttacker)))
-        gSprites[gBattlerSpriteIds[BATTLE_PARTNER(gBattleAnimAttacker)]].oam.priority = priority;
 }
 
 void InitPrioritiesForVisibleBattlers(void)

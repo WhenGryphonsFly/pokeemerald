@@ -2434,13 +2434,6 @@ static void UpdateBubbleSprite(struct Sprite *sprite)
 
 //------------------------------------------------------------------------------
 
-// Unused function.
-static void UnusedSetCurrentAbnormalWeather(u32 weather, u32 unknown)
-{
-    sCurrentAbnormalWeather = weather;
-    sUnusedWeatherRelated = unknown;
-}
-
 #define tState         data[0]
 #define tWeatherA      data[1]
 #define tWeatherB      data[2]
