@@ -48,10 +48,6 @@
 
 extern const u8 EventScript_ResetAllMapFlags[];
 
-static void ClearFrontierRecord(void);
-static void WarpToTruck(void);
-static void ResetMiniGamesRecords(void);
-
 EWRAM_DATA bool8 gDifferentSaveFile = FALSE;
 EWRAM_DATA bool8 gEnableContestDebugging = FALSE;
 
@@ -81,12 +77,6 @@ void CopyTrainerId(u8 *dst, u8 *src)
         dst[i] = src[i];
 }
 
-static void InitPlayerTrainerId(void)
-{
-    u32 trainerId = (Random() << 16) | GetGeneratedTrainerIdLower();
-    SetTrainerId(trainerId, gSaveBlock2Ptr->playerTrainerId);
-}
-
 // L=A isnt set here for some reason.
 static void SetDefaultOptions(void)
 {
@@ -98,37 +88,6 @@ static void SetDefaultOptions(void)
     gSaveBlock2Ptr->regionMapZoom = FALSE;
 }
 
-static void ClearPokedexFlags(void)
-{
-    gUnusedPokedexU8 = 0;
-    memset(&gSaveBlock2Ptr->pokedex.owned, 0, sizeof(gSaveBlock2Ptr->pokedex.owned));
-    memset(&gSaveBlock2Ptr->pokedex.seen, 0, sizeof(gSaveBlock2Ptr->pokedex.seen));
-}
-
-void ClearAllContestWinnerPics(void)
-{
-    s32 i;
-
-    ClearContestWinnerPicsInContestHall();
-
-    // Clear Museum paintings
-    for (i = MUSEUM_CONTEST_WINNERS_START; i < NUM_CONTEST_WINNERS; i++)
-        gSaveBlock1Ptr->contestWinners[i] = sContestWinnerPicDummy;
-}
-
-static void ClearFrontierRecord(void)
-{
-    CpuFill32(0, &gSaveBlock2Ptr->frontier, sizeof(gSaveBlock2Ptr->frontier));
-
-    gSaveBlock2Ptr->frontier.opponentNames[0][0] = EOS;
-    gSaveBlock2Ptr->frontier.opponentNames[1][0] = EOS;
-}
-
-static void WarpToTruck(void)
-{
-    SetWarpDestination(MAP_GROUP(INSIDE_OF_TRUCK), MAP_NUM(INSIDE_OF_TRUCK), WARP_ID_NONE, -1, -1);
-    WarpIntoMap();
-}
 
 void Sav2_ClearSetDefault(void)
 {
@@ -144,12 +103,4 @@ void ResetMenuAndMonGlobals(void)
     ZeroEnemyPartyMons();
     ResetBagScrollPositions();
     ResetPokeblockScrollPositions();
-}
-
-static void ResetMiniGamesRecords(void)
-{
-    CpuFill16(0, &gSaveBlock2Ptr->berryCrush, sizeof(struct BerryCrush));
-    SetBerryPowder(&gSaveBlock2Ptr->berryCrush.berryPowderAmount, 0);
-    ResetPokemonJumpRecords();
-    CpuFill16(0, &gSaveBlock2Ptr->berryPick, sizeof(struct BerryPickingResults));
 }
